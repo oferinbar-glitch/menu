@@ -776,11 +776,30 @@ const haptic=()=>{try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}};
    חישובים
    ========================================================= */
 const findIn=(groups,id)=>{if(!groups||!id)return null;for(const g of groups)for(const i of g.items)if(i.id===id)return i;return null};
-function label(r,path){
-  const id=getP(r,path); if(!id)return null;
-  if(r.snap&&r.snap[path])return r.snap[path];
+/* בחירה מרובה: r.sel[path] = רשימת חלופות; השדה הישן מחזיק את הראשונה */
+function selOf(r,path){const a=r.sel&&r.sel[path];if(Array.isArray(a)&&a.length)return a;const id=getP(r,path);return id?[id]:[]}
+function setSel(r,path,arr){if(!r.sel)r.sel={};if(arr.length)r.sel[path]=arr;else delete r.sel[path];setP(r,path,arr[0]||null)}
+function labelOf(r,path,id){
+  if(r.snapm&&r.snapm[path]&&r.snapm[path][id])return r.snapm[path][id];
+  if(id===getP(r,path)&&r.snap&&r.snap[path])return r.snap[path];
   const o=findIn(CAT[path],id)||findIn(LUNCH_P,id)||findIn(DINNER_C,id);
-  return {n:o?o.n:(LEGACY[id]||id),a:'',w:'',legacy:1};
+  return o?{n:o.n,a:o.a,w:o.w}:{n:LEGACY[id]||id,a:'',w:'',legacy:1};
+}
+function label(r,path){
+  const ids=selOf(r,path); if(!ids.length)return null;
+  if(ids.length===1)return labelOf(r,path,ids[0]);
+  return {n:ids.map(i=>labelOf(r,path,i).n).join(' + '),a:'',w:'',multi:1};
+}
+const firstNum=t=>{const m=String(t||'').match(/\d+(?:\.\d+)?/);return m?+m[0]:0};
+/* כמה מהמנה מולא: כל חלופה נמדדת מול היעד שלה בתפריט. במוצר שהיעד שלו לפני בישול והמשקל מוזן אחרי בישול, מוסיפים 25% להערכה */
+function portionOf(r,path){
+  const q=r.q[path]||{}; let tot=0, approx=false, any=false;
+  for(const id of selOf(r,path)){const o=findIn(CAT[path],id); if(!o)continue;
+    const comps=o.comp||[{f:id,t:o.a,ck:o.w===RAW}]; let fr=0,n=0;
+    for(const c of comps){const tg=firstNum(c.t), a=+q[c.f]||0; if(!tg)continue; n++; if(a>0)any=true;
+      let x=a; if(c.ck||o.w===RAW){x=a/0.75; if(a>0)approx=true} fr+=x/tg}
+    if(n)tot+=fr/n}
+  return {pct:Math.round(tot*100),approx,any};
 }
 const freeUsed=r=>r.free.reduce((s,x)=>s+(+x.k||0),0);
 function freeBal(target){
@@ -817,8 +836,10 @@ function nadd(t,x){if(!x)return t;if(x.miss&&!Array.isArray(x.miss)){if(!t.miss.
   t.k+=x.k;t.p+=x.p;t.c+=x.c;t.f+=x.f;if(Array.isArray(x.miss))x.miss.forEach(m=>{if(!t.miss.includes(m))t.miss.push(m)});t.noamt+=x.noamt||0;t.nomac+=x.nomac||0;return t}
 function compsFor(r,path){
   if(path==='snack.opt'){const sn=SNACKS.find(s=>s.id===r.snack.opt);return sn?sn.comp(r.snack.sub):[]}
-  const id=getP(r,path),o=findIn(CAT[path],id);if(!o)return[];
-  return o.comp||[{f:id,t:o.a+(o.w?' '+o.w:''),ck:o.w===RAW}];
+  const out=[];
+  for(const id of selOf(r,path)){const o=findIn(CAT[path],id);if(!o)continue;
+    (o.comp||[{f:id,t:o.a+(o.w?' '+o.w:''),ck:o.w===RAW}]).forEach(c=>out.push(Object.assign({opt:id},c)))}
+  return out;
 }
 function sumComps(r,path){const t=NZ(),q=r.q[path]||{};
   for(const c of compsFor(r,path)){if(!c.f||!(q[c.f]>0)){t.noamt++;continue}nadd(t,nut(c.f,q[c.f]))}return t}
@@ -909,8 +930,9 @@ function pickRow(kind,k,path,r,extra){
   const l=label(r,path); if(!l)return row(kind,k,path,null,'pick');
   const comps=compsFor(r,path), q=r.q[path]||{}, track=cur>=S.nutStart&&comps.length>0;
   const t=sumComps(r,path);
-  const info={n:l.n,s:sub(l.a?'יעד '+l.a+(l.w?' '+l.w:''):'',extra,t.k>0?n0(t.k)+' קל׳':'')};
-  if(!track)info.a=l.a;
+  const multi=selOf(r,path).length>1, po=portionOf(r,path);
+  const info={n:l.n,s:sub(multi?(po.any?(po.approx?'כ-':'')+po.pct+'% מהמנה':''):(l.a?'יעד '+l.a+(l.w?' '+l.w:''):''),extra,t.k>0?n0(t.k)+' קל׳':'')};
+  if(!track)info.a=multi?'':l.a;
   else if(comps.every(c=>c.f&&q[c.f]>0)){if(comps.length===1){info.q=n1(q[comps[0].f]);info.u=unitOf(comps[0].f)}else info.txt=comps.map(c=>n1(q[c.f])+' '+unitOf(c.f)).join(' + ')}
   else info.need=1;
   return row(kind,k,path,info,comps.length?'amt':'pick');
@@ -1123,7 +1145,11 @@ function macroLine(t){return`<div class="mrow"><span><b>${n0(t.k)}</b> קל׳</s
 function missLine(t){return t.miss.length?`<div style="color:var(--warn);margin-top:6px">חסרים ערכים תזונתיים: ${t.miss.map(id=>esc((food(id)||{}).n||id)).join(', ')}. <button class="btn sm" style="margin-top:6px" data-act="foodedit" data-val="${t.miss[0]}">הוספת ערכים</button></div>`:''}
 function liveHtml(){
   const s=sheetSpec; if(!s)return''; const r=getDay(cur);
-  if(s.type==='amt'){const t=sumComps(r,s.path);return (t.k>0?macroLine(t):'')+missLine(t)}
+  if(s.type==='amt'){const t=sumComps(r,s.path);let h='';
+    if(s.path!=='snack.opt'&&selOf(r,s.path).length>1){const po=portionOf(r,s.path);
+      h+=`<div class="pt" style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="num" style="font-size:24px">${po.approx?'כ-':''}${po.pct}%</span><span style="font-size:13px;color:var(--ink-2)">מהמנה${po.pct>=100?(po.pct>103?', מעל המנה':', המנה מלאה'):''}</span></div>
+        <div class="pb" style="height:8px;border-radius:6px;background:var(--surface);overflow:hidden;margin-bottom:10px"><i style="display:block;height:100%;width:${Math.min(100,po.pct)}%;background:${po.pct>103?'var(--warn)':'var(--brand-2)'}"></i></div>`}
+    return h+(t.k>0?macroLine(t):'')+missLine(t)}
   if(s.type==='xamt'){const a=parseFloat((document.getElementById('xa')||{}).value),n=nut(s.f,a);if(!n)return'';if(n.miss)return missLine({miss:[s.f]});return macroLine(n)}
   if(s.type==='veg'){const q=vegQ(r,s.path),st=vegStat(q),t=sumMap(q);
     if(s.path==='snack.green')return st.tot>0?`<div class="vprog"><div class="pt"><span class="num">${n1(st.tot)}</span><span>ג׳ ירק ירוק${t.k>0?', '+n0(t.k)+' קל׳':''}</span></div></div>`:'';
@@ -1149,7 +1175,7 @@ function renderSheet(){
   const s=sheetSpec; if(!s)return; const r=getDay(cur); let html='';
   const scroll=sheetEl.querySelector('.sh-body')?.scrollTop||0;
   if(s.type==='pick'){
-    const groups=CAT[s.path], sel=getP(r,s.path), meal=s.path.split('.')[0], kind=s.path.split('.')[1];
+    const groups=CAT[s.path], selA=selOf(r,s.path), sel=s.add?null:getP(r,s.path), meal=s.path.split('.')[0], kind=s.path.split('.')[1];
     const title=kind==='protein'?'חלבון':kind==='carb'?'פחמימה':'העמסה בחוץ';
     const total=groups.reduce((a,g)=>a+g.items.length,0);
     let body='';
@@ -1160,21 +1186,28 @@ function renderSheet(){
       body+=`<div class="tabs-x" role="tablist">${groups.map((g,i)=>`<button role="tab" aria-selected="${i===ci}" class="${i===ci?'on':''}" data-act="ctab" data-val="${i}">${esc(g.t||g.g)}</button>`).join('')}</div>`;
       body+=`<div class="ogrp">${esc(groups[ci].g)}</div><div class="olist">${groups[ci].items.map(o=>optRow(o,o.id===sel,'choose',o.id)).join('')}</div>`;
     }else body+=`<div class="olist">${groups.map(g=>`${groups.length>1?`<div class="ogrp">${esc(g.g)}</div>`:''}${g.items.map(o=>optRow(o,o.id===sel,'choose',o.id)).join('')}`).join('')}</div>`;
-    if(sel)body+=`<div class="dangerzone"><button class="btn danger sm" data-act="unpick">ניקוי הבחירה</button></div>`;
-    html=shell(title,'אפשרות אחת '+mealName[meal]+'. הכמות בתפריט היא יעד, את המשקל מזינים בשלב הבא',body);
+    if(sel&&!s.add)body+=`<div class="dangerzone"><button class="btn danger sm" data-act="unpick">ניקוי הבחירה</button></div>`;
+    html=shell(s.add?title+': חלופה נוספת':title,s.add?'בוחרים מוצר לשילוב עם '+selA.map(i=>labelOf(r,s.path,i).n).join(' + '):'בוחרים מוצר '+mealName[meal]+', ואפשר לשלב חלופות בשלב הבא',body);
   }else if(s.type==='amt'){
     const p=s.path, isSn=p==='snack.opt', comps=compsFor(r,p), q=r.q[p]||{}, meal=p.split('.')[0];
     const l=isSn?SNACKS.find(x=>x.id===r.snack.opt):label(r,p);
     if(!l){hideSheet();return}
+    const multi=!isSn&&selOf(r,p).length>1;
     let body=comps.map((c,i)=>{
       if(!c.f)return`<p class="muted" style="margin-top:14px">קודם בוחרים ${r.snack.opt==='s2'?'איזה בשר':'איזו גבינה'}. <button class="btn sm" data-act="snacksub">בחירה</button></p>`;
-      const f=food(c.f), u=unitOf(c.f);
-      const lab=(comps.length>1?f.n+': ':'')+(f.un?'כמה '+f.un+'?':c.ck?'משקל אחרי בישול':f.b==='ml'?'כמות':'משקל');
-      return`<div class="field"><label for="q${i}">${esc(lab)}</label><div class="qwrap"><input id="q${i}" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done" data-q="${p}" data-f="${c.f}" value="${q[c.f]??''}" ${i===0&&!(q[c.f]>0)?'autofocus':''}><span class="qu">${u}</span></div><small class="hint">יעד בתפריט: ${esc(c.t)}</small></div>`}).join('');
+      const f=food(c.f), u=unitOf(c.f), head=multi&&(i===0||comps[i-1].opt!==c.opt);
+      const sameOpt=comps.filter(x=>x.opt===c.opt).length>1;
+      const lab=((comps.length>1&&(!multi||sameOpt))?f.n+': ':'')+(f.un?'כמה '+f.un+'?':c.ck?'משקל אחרי בישול':f.b==='ml'?'כמות':'משקל');
+      return`${head?`<div class="ogrp" style="display:flex;align-items:center;gap:8px;margin-top:${i?22:14}px"><span style="flex:1;font-size:15px;color:var(--ink);font-weight:600">${esc(labelOf(r,p,c.opt).n)}</span><button class="btn sm danger" data-act="unopt" data-val="${c.opt}">הסרה</button></div>`:''}
+      <div class="field" style="${head?'margin-top:6px':''}"><label for="q${i}">${esc(lab)}</label><div class="qwrap"><input id="q${i}" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done" data-q="${p}" data-f="${c.f}" value="${q[c.f]??''}" ${i===0&&!(q[c.f]>0)?'autofocus':''}><span class="qu">${u}</span></div><small class="hint">יעד בתפריט${multi?' למנה מלאה':''}: ${esc(c.t)}</small></div>`}).join('');
     body+=`<div id="live" class="live">${liveHtml()}</div>`;
-    if(!isSn&&getP(r,p)==='lean_fish'){const f=r[meal].fish;
+    if(!isSn&&!multi)body+=`<div style="margin-top:12px"><button class="btn sm line" data-act="repick" data-val="${p}">החלפת מוצר</button></div>`;
+    if(!isSn&&selOf(r,p).includes('lean_fish')){const f=r[meal].fish;
       body+=`<div class="lbl" style="margin-top:18px">איזה דג? (לא חובה)</div><div class="chips">${FISH.map(x=>`<button class="chip ${f===x?'on':''}" style="--c:var(--pro)" data-act="fish" data-val="${esc(x)}">${esc(x)}</button>`).join('')}</div>`}
-    html=shell(esc(l.n),isSn&&l.bread?'עם '+BREAD:'',body,`<div class="foot2"><button class="btn line" data-act="${isSn?'snack':'repick'}" data-val="${p}">החלפת מוצר</button><button class="btn pri" data-act="close">סיום</button></div>`);
+    const kindN=p.endsWith('carb')?'פחמימה':p.endsWith('out')?'העמסה בחוץ':'חלבון';
+    html=shell(multi?kindN+': שילוב':esc(l.n),isSn?(l.bread?'עם '+BREAD:''):multi?'כל חלופה נמדדת מול המנה המלאה שלה':'',body,
+      isSn?`<div class="foot2"><button class="btn line" data-act="snack">החלפת מוצר</button><button class="btn pri" data-act="close">סיום</button></div>`
+          :`<div class="foot2"><button class="btn line" data-act="addopt" data-val="${p}">${I.plus}שילוב חלופה</button><button class="btn pri" data-act="close">סיום</button></div>`);
   }else if(s.type==='veg'){
     const p=s.path, q=vegQ(r,p), sng=p==='snack.green', meal=p.split('.')[0];
     const lists=sng?['green']:['color','green'];
@@ -1361,7 +1394,7 @@ function viewRules(){
     h+=rg('בצלחת','--veg',[
       ['ירקות','<b>225 ג׳</b> צבעוניים או <b>375 ג׳</b> ירוקים'],
       ['שילוב','כל שילוב, גם בתוך קבוצה וגם בין הקבוצות. כל גרם צבעוני הוא 1/225 מהמנה, וכל גרם ירוק 1/375'],
-      ['חלבון ופחמימה','אפשרות אחת בלבד, בלי שילובים'],
+      ['חלבון ופחמימה','אפשר לשלב חלופות. כל חלופה נמדדת מול המנה המלאה שלה בתפריט, והאפליקציה מחשבת כמה מהמנה מולא'],
       ['גבינות 5%','צפתית, בולגרית ופטה עם לפחות 16 ג׳ חלבון ל-100 ג׳'],
       ['גבנ״צ 9%','פרוסה שוקלת 30 ג׳'],
       ['יוגורט חלבון','עד 150 קל׳ לגביע']]);
@@ -1499,7 +1532,7 @@ function act(a,v,el){
     case'dtab':dataTab=v;render();break;
     case'nut':openSheet({type:'nut'});break;
     case'bool':haptic();upd(r=>{setP(r,v,!getP(r,v));if(v==='training'&&!r.training)r.loadingToday=false});break;
-    case'lmode':upd(r=>{if(r.loading.mode!==v){r.loading.mode=v;r.loading.protein=r.loading.carb=r.loading.out=r.loading.fish=null}});break;
+    case'lmode':upd(r=>{if(r.loading.mode!==v){r.loading.mode=v;['loading.protein','loading.carb','loading.out'].forEach(p=>{setSel(r,p,[]);delete r.q[p];delete r.snap[p];if(r.snapm)delete r.snapm[p]});r.loading.fish=null}});break;
     case'milk':haptic();upd(r=>{r.milk=+v});break;
     case'addx':openSheet({type:'addx'});break;
     case'xpick':openSheet({type:'xamt',f:v});break;
@@ -1539,11 +1572,25 @@ function act(a,v,el){
     case'adddev':openSheet({type:'dev'});break;
     case'close':closeSheet();break;
     case'ctab':catTab[sheetSpec.path]=+v;renderSheet();sheetEl.querySelector('.sh-body').scrollTop=0;break;
-    case'choose':{haptic();const p=sheetSpec.path, groups=CAT[p], o=findIn(groups,v), meal=p.split('.')[0];
-      upd(r=>{if(getP(r,p)!==v)delete r.q[p];setP(r,p,v);r.snap[p]={n:o.n,a:o.a,w:o.w};if(p.endsWith('protein')&&v!=='lean_fish')r[meal].fish=null});
+    case'choose':{haptic();const p=sheetSpec.path, add=!!sheetSpec.add, groups=CAT[p], o=findIn(groups,v), meal=p.split('.')[0];
+      upd(r=>{if(!r.snapm)r.snapm={};if(!r.snapm[p])r.snapm[p]={};
+        let arr=selOf(r,p);
+        if(add){if(!arr.includes(v))arr=[...arr,v]}
+        else{if(!(arr.length===1&&arr[0]===v)){delete r.q[p];r.snapm[p]={}}arr=[v]}
+        setSel(r,p,arr);r.snapm[p][v]={n:o.n,a:o.a,w:o.w};r.snap[p]=r.snapm[p][arr[0]]||r.snap[p];
+        if(p.endsWith('protein')&&!arr.includes('lean_fish'))r[meal].fish=null});
       openSheet({type:'amt',path:p}); break}
+    case'addopt':catTab={};openSheet({type:'pick',path:v,add:1});break;
+    case'unopt':{const p=sheetSpec.path,meal=p.split('.')[0],u=undoable();
+      upd(r=>{const o=findIn(CAT[p],v),fs=(o&&o.comp?o.comp.map(c=>c.f):[v]);
+        const arr=selOf(r,p).filter(i=>i!==v);setSel(r,p,arr);
+        if(r.q[p]){fs.forEach(f=>delete r.q[p][f]);if(!Object.keys(r.q[p]).length)delete r.q[p]}
+        if(r.snapm&&r.snapm[p])delete r.snapm[p][v];
+        if(arr.length){r.snap[p]=labelOf(r,p,arr[0])}else delete r.snap[p];
+        if(v==='lean_fish')r[meal].fish=null});
+      toast('החלופה הוסרה',u);if(!selOf(getDay(cur),p).length)closeSheet();break}
     case'fish':{haptic();const meal=sheetSpec.path.split('.')[0];upd(r=>{r[meal].fish=r[meal].fish===v?null:v});break}
-    case'unpick':{const u=undoable();const p=sheetSpec.path,meal=p.split('.')[0];toast('הבחירה נוקתה',u);upd(r=>{setP(r,p,null);delete r.snap[p];delete r.q[p];if(p.endsWith('protein'))r[meal].fish=null});closeSheet();break}
+    case'unpick':{const u=undoable();const p=sheetSpec.path,meal=p.split('.')[0];toast('הבחירה נוקתה',u);upd(r=>{setSel(r,p,[]);delete r.snap[p];delete r.q[p];if(r.snapm)delete r.snapm[p];if(p.endsWith('protein'))r[meal].fish=null});closeSheet();break}
     case'vclear':{const u=undoable(),p=sheetSpec.path;upd(r=>{delete r.q[p];if(p==='snack.green')r.snack.green=null;else setP(r,p,vegBlank())});closeSheet();toast('הירקות נוקו',u);break}
     case'snackpick':{haptic();const o=SNACKS.find(x=>x.id===v);upd(r=>{if(r.snack.opt!==v){r.snack.opt=v;r.snack.sub=null;delete r.q['snack.opt']}r.snap['snack.opt']={n:o.n,a:o.a}});openSheet(o.sub?{type:'snacksub'}:{type:'amt',path:'snack.opt'});break}
     case'snackclear':toast('ארוחת הביניים בוטלה',undoable());upd(r=>{r.snack={opt:null,sub:null,green:null};delete r.snap['snack.opt'];delete r.q['snack.opt'];delete r.q['snack.green']});closeSheet();break;
@@ -1556,6 +1603,8 @@ function act(a,v,el){
       upd(r=>r.dev.push(d));closeSheet();toast('החריגה נרשמה');break}
     case'copyy':{const u=undoable(),y=ydayMeal(v);if(!y)break;haptic();
       upd(r=>{const m=r[v],ym=y[v];m.protein=ym.protein;m.fish=ym.fish||null;
+        if(!r.sel)r.sel={};if(!r.snapm)r.snapm={};
+        [v+'.protein',v+'.carb'].forEach(p=>{if(y.sel&&y.sel[p])r.sel[p]=[...y.sel[p]];else if(r.sel)delete r.sel[p];if(y.snapm&&y.snapm[p])r.snapm[p]=JSON.parse(JSON.stringify(y.snapm[p]))});
         const cp=p=>{if(y.q[p])r.q[p]=JSON.parse(JSON.stringify(y.q[p]))};cp(v+'.veg');cp(v+'.protein');
         const po=findIn(CAT[v+'.protein'],ym.protein);r.snap[v+'.protein']={n:po.n,a:po.a,w:po.w};
         if(v==='dinner'){m.carb=ym.carb;cp('dinner.carb');const co=findIn(DINNER_C,ym.carb);r.snap['dinner.carb']={n:co.n,a:co.a,w:co.w}}});
