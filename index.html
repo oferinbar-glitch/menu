@@ -25,6 +25,7 @@
   --free:#9E3A68; --free-soft:#F6E2EB;
   --bad:#B3261E; --bad-soft:#FBE0DC; --warn:#7A5200; --warn-soft:#FAEFD0;
   --m-p:#C2452D; --m-c:#B58A00; --m-f:#2E78B7; --toast-act:#9FE0BF;
+  --vcol:#B4501A; --vcol-soft:#FCEBDD;
   --shadow:0 1px 2px rgba(64,58,46,.05),0 10px 28px -14px rgba(64,58,46,.22);
   --f-ui:"Rubik",system-ui,"Segoe UI",Roboto,Arial,sans-serif;
   --f-num:"Rubik",system-ui,sans-serif; --f-disp:"Rubik",system-ui,sans-serif;
@@ -41,6 +42,7 @@
   --free:#E78DB6; --free-soft:#3B1F2D;
   --bad:#FF8A7D; --bad-soft:#3D1D1A; --warn:#F2C760; --warn-soft:#352A10;
   --m-p:#C0402C; --m-c:#A49210; --m-f:#4A8AD0; --toast-act:#17694A;
+  --vcol:#F2A56E; --vcol-soft:#3A2416;
   --shadow:0 0 0 1px var(--line); color-scheme:dark;
 }}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -610,6 +612,37 @@ nav.tabs .fab:active{transform:translateX(-50%) scale(.96)}
 .offres{margin-top:8px}
 .offres .frow .v small{white-space:normal}
 
+/* ---- vegetable groups ---- */
+.vgrp{--gc:var(--veg);--gs:var(--veg-soft);margin-top:14px;border-radius:20px;background:var(--gs);padding:4px 12px 6px}
+.vgrp.vg-color{--gc:var(--vcol);--gs:var(--vcol-soft)}
+.vgh{display:flex;align-items:center;gap:10px;padding:12px 2px 10px}
+.vgh i{width:12px;height:12px;border-radius:50%;background:var(--gc);flex:none}
+.vgh b{font-size:17px;font-weight:700;color:var(--gc);letter-spacing:-.2px}
+.vgh span{font-size:13px;color:var(--ink-2);flex:1}
+.vgh em{font-style:normal;font-size:13px;font-weight:700;color:var(--gc);background:var(--surface);padding:3px 10px;border-radius:999px}
+.vgrp .vrow{border-bottom-color:color-mix(in srgb,var(--gc) 18%,transparent)}
+.vgrp .vrow input{background:var(--surface);border-color:color-mix(in srgb,var(--gc) 30%,var(--line))}
+.vgrp .vrow.has input{border-color:var(--gc);background:var(--surface);color:var(--gc)}
+.vgrp .vrow input:focus{border-color:var(--gc)}
+.vdot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:5px}
+/* ---- product line in amount sheet ---- */
+.prod{display:flex;align-items:center;gap:10px;width:100%;margin-top:14px;padding:10px 12px;border-radius:14px;background:var(--surface-2);text-align:right}
+.prod .v{flex:1;min-width:0}
+.prod .v b{display:block;font-size:15px;font-weight:600}
+.prod .v small{display:block;font-size:12.5px;color:var(--ink-2);margin-top:1px}
+.prod .chg{font-size:13px;font-weight:600;color:var(--brand);white-space:nowrap}
+.optpct{font-size:13px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:3px 10px;border-radius:999px}
+.field input.err,.vrow input.err{border-color:var(--bad)!important;background:var(--bad-soft)!important}
+.hint.hlive{display:block;font-weight:600;color:var(--brand);margin-top:4px}
+.addban{margin-top:12px;border-radius:14px;background:var(--brand-soft);color:var(--brand);padding:10px 12px;font-size:14px;font-weight:500}
+/* ---- milk ---- */
+.mlk-sub{font-size:13px;color:var(--ink-2);margin:4px 0 0}
+.mlk-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.mlk-over{color:var(--bad)}
+.scanbox{position:relative;margin-top:10px;border-radius:16px;overflow:hidden;background:#000}
+.scanbox video{display:block;width:100%;max-height:240px;object-fit:cover}
+.scanbox button{position:absolute;top:8px;left:8px}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media (max-width:360px){.r .k{width:54px}.r .amt .num{font-size:20px}.dayhead .dnum{font-size:38px}}
 </style>
@@ -659,8 +692,8 @@ const BASE_FOODS={
   pita:fd('פיתה לבנה','carb'), light_pita:fd('פיתה קלה','carb',null,null,null,null,{un:'פיתות',ug:null}),
   bread_light:fd('לחם קל','carb',null,null,null,null,{un:'פרוסות',ug:null}),
   milk:fd('חלב','oth',null,null,null,null,{b:'ml'}), hearts_palm:fd('לבבות דקל','oth'), skinny_pasta:fd('סקיני פסטה','oth'),
-  pizza:fd('פיצה','oth',null,null,null,null,{un:'משולשים',ug:null}), sushi:fd('סושי','oth',null,null,null,null,{un:'רולים',ug:null}),
-  mcroyal:fd('דאבל מקרויאל','oth',null,null,null,null,{un:'יחידות',ug:null}), mc_potato:fd('פוטטו ענק','oth',null,null,null,null,{un:'מנות',ug:null})
+  pizza:fd('פיצה','oth',null,null,null,null,{b:'u',un:'משולשים'}), sushi:fd('סושי','oth',null,null,null,null,{b:'u',un:'רולים'}),
+  mcroyal:fd('דאבל מקרויאל','oth',null,null,null,null,{b:'u',un:'יחידות'}), mc_potato:fd('פוטטו ענק','oth',null,null,null,null,{b:'u',un:'מנות'})
 };
 const GRP={vc:'ירקות צבעוניים',vg:'ירקות ירוקים',pro:'חלבון',carb:'פחמימה',oth:'אחר',my:'מוצרים שהוספתי'};
 const VEGIDS={color:Object.keys(BASE_FOODS).filter(i=>BASE_FOODS[i].grp==='vc'),green:Object.keys(BASE_FOODS).filter(i=>BASE_FOODS[i].grp==='vg')};
@@ -743,7 +776,7 @@ let S=load()||{v:2,start:today(),created:Date.now(),lastExport:null,days:{}};
 if(!S.days)S.days={};
 if(!S.foods)S.foods={};
 if(!S.nutStart)S.nutStart=today();
-S.v=3;
+if(!S.pref)S.pref={};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){storageOK=false}}
 if(storageOK&&navigator.storage&&navigator.storage.persist&&location.protocol.startsWith('http')){navigator.storage.persist().catch(()=>{})}
 
@@ -753,7 +786,7 @@ function blank(){return{wake:'',training:false,trainEnd:'',loadingToday:false,
   snack:{opt:null,sub:null,green:null},
   dinner:{veg:vegBlank(),protein:null,fish:null,carb:null},
   loading:{mode:'home',protein:null,fish:null,carb:null,out:null,split:false},
-  free:[],freebies:[],milk:0,dev:[],snap:{},q:{},extra:[]}}
+  free:[],freebies:[],milk:0,milks:[],dev:[],snap:{},q:{},extra:[],pf:{}}}
 function norm(r){
   const b=blank(); if(!r)return b;
   const o=Object.assign(b,JSON.parse(JSON.stringify(r)));
@@ -764,6 +797,9 @@ function norm(r){
   if(!o.snap)o.snap={};
   if(!o.q)o.q={};
   if(!Array.isArray(o.extra))o.extra=[];
+  if(!o.pf)o.pf={};
+  if(!Array.isArray(r.milks))o.milks=r.milk>0?[{f:'milk',a:+r.milk}]:[];
+  o.milk=o.milks.reduce((s,x)=>s+(+x.a||0),0);
   return o}
 const getDay=d=>norm(S.days[d]);
 let cur=today(), wk=weekStart(today()), tab='day';
@@ -792,15 +828,9 @@ function label(r,path){
 }
 const firstNum=t=>{const m=String(t||'').match(/\d+(?:\.\d+)?/);return m?+m[0]:0};
 /* כמה מהמנה מולא: כל חלופה נמדדת מול היעד שלה בתפריט. במוצר שהיעד שלו לפני בישול והמשקל מוזן אחרי בישול, מוסיפים 25% להערכה */
-function portionOf(r,path){
-  const q=r.q[path]||{}; let tot=0, approx=false, any=false;
-  for(const id of selOf(r,path)){const o=findIn(CAT[path],id); if(!o)continue;
-    const comps=o.comp||[{f:id,t:o.a,ck:o.w===RAW}]; let fr=0,n=0;
-    for(const c of comps){const tg=firstNum(c.t), a=+q[c.f]||0; if(!tg)continue; n++; if(a>0)any=true;
-      let x=a; if(c.ck||o.w===RAW){x=a/0.75; if(a>0)approx=true} fr+=x/tg}
-    if(n)tot+=fr/n}
-  return {pct:Math.round(tot*100),approx,any};
-}
+function portionOf(r,path){let tot=0,approx=false,any=false,unk=false;
+  for(const id of selOf(r,path)){const o=optFrac(r,path,id);if(!o){unk=true;continue}tot+=o.fr;approx=approx||o.ap;any=any||o.any}
+  return{pct:Math.round(tot*100),approx,any,unk}}
 const freeUsed=r=>r.free.reduce((s,x)=>s+(+x.k||0),0);
 function freeBal(target){
   if(target<S.start)return null;
@@ -825,21 +855,42 @@ function streaks(){
 /* ---------- תזונה ---------- */
 const food=id=>(S.foods&&S.foods[id])||BASE_FOODS[id]||null;
 const allFoodIds=()=>[...Object.keys(BASE_FOODS),...Object.keys(S.foods||{}).filter(i=>!BASE_FOODS[i])];
-const unitOf=id=>{const f=food(id);return !f?'':f.un?f.un:f.b==='ml'?'מ״ל':'ג׳'};
+const unitOf=id=>{const f=food(id);return !f?'':f.b==='u'?(f.un||'יח׳'):f.b==='ml'?'מ״ל':'ג׳'};
+const basisTxt=f=>f.b==='u'?'ל'+(f.un?'יחידה':'יחידה'):'ל-100 '+(f.b==='ml'?'מ״ל':'ג׳');
+const fmtQ=(x,id)=>{const f=food(id);return f&&f.b==='u'?n1(x):n0(x)};
 const n0=x=>Math.round(x).toLocaleString('en-US');
 const n1=x=>String(Math.round(x*10)/10);
-const hasVals=f=>f&&f.k!=null&&(!f.un||f.ug>0);
+const hasVals=f=>!!f&&f.k!=null;
 function nut(id,a){const f=food(id);a=+a;if(!f||!(a>0))return null;if(!hasVals(f))return{miss:id};
-  const m=(f.un?a*f.ug:a)/100;return{k:f.k*m,p:(+f.p||0)*m,c:(+f.c||0)*m,f:(+f.f||0)*m}}
+  const m=f.b==='u'?a:a/100;return{k:f.k*m,p:(+f.p||0)*m,c:(+f.c||0)*m,f:(+f.f||0)*m}}
 const NZ=()=>({k:0,p:0,c:0,f:0,miss:[],noamt:0,nomac:0});
 function nadd(t,x){if(!x)return t;if(x.miss&&!Array.isArray(x.miss)){if(!t.miss.includes(x.miss))t.miss.push(x.miss);return t}
   t.k+=x.k;t.p+=x.p;t.c+=x.c;t.f+=x.f;if(Array.isArray(x.miss))x.miss.forEach(m=>{if(!t.miss.includes(m))t.miss.push(m)});t.noamt+=x.noamt||0;t.nomac+=x.nomac||0;return t}
+/* סוג מוצר ספציפי לכל רכיב: r.pf[path][generic]=foodId; ברירת מחדל: הסוג האחרון שנבחר (S.pref) */
+function effF(r,path,g){const pf=r.pf&&r.pf[path];if(pf&&pf[g]&&food(pf[g]))return pf[g];const q=r.q[path];if(q&&q[g]!=null)return g;const p=S.pref&&S.pref[g];return p&&food(p)?p:g}
+function optComps(r,path,id){const o=findIn(CAT[path],id);if(!o)return[];
+  return (o.comp||[{f:id,t:o.a+(o.w?' '+o.w:''),ck:o.w===RAW}]).map(c=>Object.assign({opt:id},c,{g:c.f,f:effF(r,path,c.f)}))}
 function compsFor(r,path){
-  if(path==='snack.opt'){const sn=SNACKS.find(s=>s.id===r.snack.opt);return sn?sn.comp(r.snack.sub):[]}
-  const out=[];
-  for(const id of selOf(r,path)){const o=findIn(CAT[path],id);if(!o)continue;
-    (o.comp||[{f:id,t:o.a+(o.w?' '+o.w:''),ck:o.w===RAW}]).forEach(c=>out.push(Object.assign({opt:id},c)))}
-  return out;
+  if(path==='snack.opt'){const sn=SNACKS.find(s=>s.id===r.snack.opt);return sn?sn.comp(r.snack.sub).map(c=>c.f?Object.assign({},c,{g:c.f,f:effF(r,path,c.f)}):Object.assign({},c)):[]}
+  const out=[];for(const id of selOf(r,path))out.push(...optComps(r,path,id));return out;
+}
+/* יעד הרכיב ביחידת ההזנה (גרם, מ״ל או יחידות). יעד ביחידות מתורגם לגרמים לפי משקל יחידה */
+function compTarget(c){const n=firstNum(c.t);if(!n)return null;
+  if(/ג׳|מ״ל/.test(c.t))return n;
+  const f=food(c.f),g=food(c.g||c.f);if(f&&f.b==='u')return n;
+  const ug=(f&&f.ug)||(g&&g.ug);return ug>0?n*ug:null}
+function optFrac(r,path,id){const q=r.q[path]||{};let fr=0,n=0,ap=false,any=false;
+  for(const c of optComps(r,path,id)){const tg=compTarget(c);if(!tg)continue;n++;const a=+q[c.f]||0;if(a>0)any=true;let x=a;if(c.ck){x=a/0.75;if(a>0)ap=true}fr+=x/tg}
+  return n?{fr:fr/n,ap,any}:null}
+function remFor(r,path,id){let o=0;for(const j of selOf(r,path)){if(j===id)continue;const x=optFrac(r,path,j);if(x)o+=x.fr}return Math.max(0,1-o)}
+function compHint(r,path,c,multi){
+  const tg=compTarget(c), u=unitOf(c.f), a=+((r.q[path]||{})[c.f])||0;
+  if(!tg)return 'יעד בתפריט: '+c.t+(/\d/.test(c.t)&&!/ג׳|מ״ל/.test(c.t)?'. משקל יחידה במוצר יאפשר לחשב בגרמים':'');
+  const conv=!/ג׳|מ״ל/.test(c.t)&&food(c.f).b!=='u'?` (כ-${n0(tg)} ${u})`:'';
+  if(!multi)return 'יעד בתפריט: '+c.t+conv+(c.ck?`, כ-${n0(tg*0.75)} ג׳ אחרי בישול`:'');
+  const rem=remFor(r,path,c.opt); if(rem<=0)return 'המנה כבר מלאה מהחלופות האחרות';
+  const al=tg*rem*(c.ck?0.75:1), left=Math.max(0,al-a);
+  return `אפשר עד ${c.ck?'כ-':''}${fmtQ(al,c.f)} ${u}${c.ck?' אחרי בישול':''}${a>0?`, נשארו עוד ${fmtQ(left,c.f)}`:''}`;
 }
 function sumComps(r,path){const t=NZ(),q=r.q[path]||{};
   for(const c of compsFor(r,path)){if(!c.f||!(q[c.f]>0)){t.noamt++;continue}nadd(t,nut(c.f,q[c.f]))}return t}
@@ -850,7 +901,7 @@ function dayNut(r){
   secs.push({n:'ביניים',t:nadd(sumComps(r,'snack.opt'),sumMap(r.q['snack.green']))});
   if(r.loadingToday){const t=r.loading.mode==='out'?sumComps(r,'loading.out'):nadd(sumComps(r,'loading.protein'),sumComps(r,'loading.carb'));secs.push({n:'העמסה',t})}
   else secs.push({n:'ערב',t:nadd(nadd(sumMap(r.q['dinner.veg']),sumComps(r,'dinner.protein')),sumComps(r,'dinner.carb'))});
-  const ex=NZ();r.extra.forEach(x=>nadd(ex,nut(x.f,x.a)));if(r.milk>0)nadd(ex,nut('milk',r.milk));secs.push({n:'תוספות וחלב',t:ex});
+  const ex=NZ();r.extra.forEach(x=>nadd(ex,nut(x.f,x.a)));r.milks.forEach(x=>nadd(ex,nut(x.f,x.a)));secs.push({n:'תוספות וחלב',t:ex});
   const fr=NZ();r.free.forEach(x=>{const k=+x.k||0;fr.k+=k;if(x.p!=null||x.c!=null||x.f!=null){fr.p+=+x.p||0;fr.c+=+x.c||0;fr.f+=+x.f||0}else fr.nomac+=k});secs.push({n:'קלוריות חופשיות',t:fr});
   const tot=NZ();secs.forEach(s=>nadd(tot,s.t));
   return{secs,tot};
@@ -1093,9 +1144,11 @@ function viewDay(){
     <div class="chips">${FREEBIES.map(id=>`<button class="chip" data-act="xpick" data-val="${id}">${esc(food(id).n)}</button>`).join('')}</div>
     ${r.extra.length?`<ul class="entries">${r.extra.map(exRow).join('')}</ul>`:''}</div>`;
 
-  h+=`<div class="jcard"><div class="jhead"><span class="tile t-m">${I.drop}</span><h3>חלב לקפה</h3><span class="pill ${r.milk?'ok':''}">${r.milk} מתוך 200 מ״ל</span></div>
-    <div class="milk"><div class="seg">${[0,50,100,150,200].map(m=>`<button class="${r.milk===m?'on':''}" data-act="milk" data-val="${m}">${m}</button>`).join('')}</div>
-    <div class="field" style="margin-top:8px"><div class="qwrap"><input id="milkin" type="number" inputmode="numeric" min="0" placeholder="כמות אחרת" value="${[0,50,100,150,200].includes(r.milk)?'':r.milk}" style="width:100%"><span class="qu">מ״ל</span></div></div></div></div>`;
+  {const mk=NZ();r.milks.forEach(x=>nadd(mk,nut(x.f,x.a)));const last=lastMilk();
+  h+=`<div class="jcard"><div class="jhead"><span class="tile t-m">${I.drop}</span><h3>חלב לקפה</h3><span class="pill ${r.milk>200?'bad':r.milk?'ok':''}">${n0(r.milk)} מתוך 200 מ״ל</span></div>
+    <p class="mlk-sub">${r.milks.length?`נספר בקלוריות: <b style="color:var(--ink)">${mk.k>0?n0(mk.k)+' קל׳':'חסרים ערכים לחלב'}</b>${r.milk>200?'. <span class="mlk-over">מעל 200 מ״ל</span>':''}`:'כל קפה עם חלב נרשם במ״ל ונספר בקלוריות'}</p>
+    ${r.milks.length?`<ul class="entries">${r.milks.map((x,i)=>{const n=nut(x.f,x.a),f=food(x.f);return`<li><span>${esc(f?f.n:x.f)} <small style="color:var(--ink-2)">${n0(x.a)} מ״ל</small></span><span style="font-size:13px;color:var(--ink-2)">${n&&!n.miss?n0(n.k)+' קל׳':'חסרים ערכים'}</span><button class="del" data-act="delmilk" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`}).join('')}</ul>`:''}
+    <div class="mlk-acts"><button class="btn sm pri" data-act="milkadd">${I.plus}קפה עם חלב</button>${last?`<button class="btn sm line" data-act="milkrep">שוב: ${n0(last.a)} מ״ל ${esc((food(last.f)||{}).n||'')}</button>`:''}</div></div>`}
 
   const fb=freeBal(cur);
   const frRow=(x,i)=>`<li><span>${esc(x.d||'ללא תיאור')}${(x.p!=null||x.c!=null||x.f!=null)?` <small style="color:var(--ink-2)">חלבון ${n1(+x.p||0)}, פחמימה ${n1(+x.c||0)}, שומן ${n1(+x.f||0)}</small>`:''}</span><span class="num">${+x.k}</span><button class="del" data-act="delfree" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`;
@@ -1114,6 +1167,7 @@ function viewDay(){
   return h;
 }
 
+function lastMilk(){let d=cur;for(let i=0;i<60;i++,d=addD(d,-1)){const raw=S.days[d];if(raw&&Array.isArray(raw.milks)&&raw.milks.length)return raw.milks[raw.milks.length-1]}return null}
 function recentFor(path,n=4){
   const cnt={},last={},groups=CAT[path]; let d=addD(cur,-1);
   for(let i=0;i<28;i++,d=addD(d,-1)){const raw=S.days[d]; if(!raw)continue; const id=getP(raw,path);
@@ -1129,9 +1183,10 @@ function openSheet(spec){
   const wasOpen=!!sheetSpec; sheetSpec=spec; renderSheet();
   sheetEl.classList.add('open'); scrim.classList.add('open');
   if(!wasOpen)history.pushState({sheet:1},'');
-  setTimeout(()=>{const f=sheetEl.querySelector('[autofocus]');if(f)f.focus()},320);
 }
-function hideSheet(){sheetSpec=null;sheetEl.classList.remove('open');scrim.classList.remove('open')}
+function needF(id,msg){const el=document.getElementById(id);if(el){el.classList.add('err');setTimeout(()=>el.classList.remove('err'),1800)}toast(msg)}
+let scanStop=null;
+function hideSheet(){if(scanStop)scanStop();sheetSpec=null;sheetEl.classList.remove('open');scrim.classList.remove('open')}
 function closeSheet(){if(!sheetSpec)return;if(history.state&&history.state.sheet)history.back();else hideSheet()}
 window.addEventListener('popstate',()=>{if(sheetSpec)hideSheet()});
 const mealName={lunch:'לצהריים',dinner:'לערב',loading:'להעמסה'};
@@ -1146,25 +1201,29 @@ function missLine(t){return t.miss.length?`<div style="color:var(--warn);margin-
 function liveHtml(){
   const s=sheetSpec; if(!s)return''; const r=getDay(cur);
   if(s.type==='amt'){const t=sumComps(r,s.path);let h='';
-    if(s.path!=='snack.opt'&&selOf(r,s.path).length>1){const po=portionOf(r,s.path);
+    if(s.path!=='snack.opt'&&(selOf(r,s.path).length>1||portionOf(r,s.path).any)){const po=portionOf(r,s.path);
       h+=`<div class="pt" style="display:flex;align-items:baseline;gap:8px;margin-bottom:8px"><span class="num" style="font-size:24px">${po.approx?'כ-':''}${po.pct}%</span><span style="font-size:13px;color:var(--ink-2)">מהמנה${po.pct>=100?(po.pct>103?', מעל המנה':', המנה מלאה'):''}</span></div>
         <div class="pb" style="height:8px;border-radius:6px;background:var(--surface);overflow:hidden;margin-bottom:10px"><i style="display:block;height:100%;width:${Math.min(100,po.pct)}%;background:${po.pct>103?'var(--warn)':'var(--brand-2)'}"></i></div>`}
     return h+(t.k>0?macroLine(t):'')+missLine(t)}
+  if(s.type==='milk'){const n=nut(s.f,parseFloat((document.getElementById('ma')||{}).value));return n?(n.miss?missLine({miss:[s.f]}):macroLine(n)):''}
   if(s.type==='xamt'){const a=parseFloat((document.getElementById('xa')||{}).value),n=nut(s.f,a);if(!n)return'';if(n.miss)return missLine({miss:[s.f]});return macroLine(n)}
   if(s.type==='veg'){const q=vegQ(r,s.path),st=vegStat(q),t=sumMap(q);
     if(s.path==='snack.green')return st.tot>0?`<div class="vprog"><div class="pt"><span class="num">${n1(st.tot)}</span><span>ג׳ ירק ירוק${t.k>0?', '+n0(t.k)+' קל׳':''}</span></div></div>`:'';
     const left=1-st.pct/100, hint=st.pct>=100?(st.pct>103?'מעל המנה':'המנה מלאה'):`נשארו ${Math.round(left*225)} ג׳ צבעוניים או ${Math.round(left*375)} ג׳ ירוקים`;
     return`<div class="vprog"><div class="pt"><span class="num">${st.pct}%</span><span>מהמנה. ${hint}</span></div>
       <div class="pb" role="img" aria-label="${st.pct}% מהמנה"><i class="${st.pct>103?'over':''}" style="width:${Math.min(100,st.pct)}%"></i></div>
-      <div class="mrow" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink-2)"><span>צבעוניים ${n1(st.col)} ג׳</span><span>ירוקים ${n1(st.grn)} ג׳</span>${st.un?`<span>פטריות ${n1(st.un)} ג׳</span>`:''}${t.k>0?`<span><b style="color:var(--ink)">${n0(t.k)}</b> קל׳</span>`:''}</div>${missLine(t)}</div>`}
+      <div class="mrow" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--ink-2)"><span><i class="vdot" style="background:var(--vcol)"></i>צבעוניים ${n1(st.col)} ג׳</span><span><i class="vdot" style="background:var(--veg)"></i>ירוקים ${n1(st.grn)} ג׳</span>${st.un?`<span>פטריות ${n1(st.un)} ג׳</span>`:''}${t.k>0?`<span><b style="color:var(--ink)">${n0(t.k)}</b> קל׳</span>`:''}</div>${missLine(t)}</div>`}
   return'';
 }
-function updLive(){const el=document.getElementById('live');if(el)el.innerHTML=liveHtml()}
-const foodSub=f=>hasVals(f)?`${n1(f.k)} קל׳, חלבון ${n1(+f.p||0)}, פחמימה ${n1(+f.c||0)}, שומן ${n1(+f.f||0)}`:(f.un&&f.k!=null?'חסר משקל ליחידה':'חסרים ערכים');
+function updLive(){const el=document.getElementById('live');if(el)el.innerHTML=liveHtml();
+  const s=sheetSpec;if(!s||s.type!=='amt'||s.path==='snack.opt')return;const r=getDay(cur),multi=selOf(r,s.path).length>1;
+  compsFor(r,s.path).forEach((c,i)=>{const h=sheetEl.querySelector(`[data-hint="${i}"]`);if(h)h.textContent=compHint(r,s.path,c,multi)});
+  selOf(r,s.path).forEach(id=>{const e=sheetEl.querySelector(`[data-optpct="${id}"]`),o=optFrac(r,s.path,id);if(e&&o)e.textContent=Math.round(o.fr*100)+'%'})}
+const foodSub=f=>hasVals(f)?`${n1(f.k)} קל׳, חלבון ${n1(+f.p||0)}, פחמימה ${n1(+f.c||0)}, שומן ${n1(+f.f||0)}`:'חסרים ערכים';
 function foodList(filter){
   const q=(filter||'').trim();
   return Object.keys(GRP).map(g=>{const ids=allFoodIds().filter(i=>{const f=food(i);return (f.grp||'my')===g&&(!q||f.n.includes(q))});
-    return ids.length?`<div class="ogrp">${GRP[g]}</div>`+ids.map(i=>{const f=food(i);return`<button class="frow" data-act="${sheetSpec&&sheetSpec.type==='addx'?'xpick':'foodedit'}" data-val="${i}"><span class="v"><b>${esc(f.n)}${f.st&&!f.n.includes(f.st)?` <small style="display:inline;color:var(--ink-3)">${f.st}</small>`:''}</b><small>${foodSub(f)}, ל-100 ${f.b==='ml'?'מ״ל':'ג׳'}</small></span>${S.foods[i]?'<span class="pill ok">שלך</span>':''}</button>`}).join(''):''}).join('')||'<p class="empty">לא נמצא מוצר בשם הזה.</p>';
+    return ids.length?`<div class="ogrp">${GRP[g]}</div>`+ids.map(i=>{const f=food(i);return`<button class="frow" data-act="${sheetSpec&&sheetSpec.type==='addx'?'xpick':'foodedit'}" data-val="${i}"><span class="v"><b>${esc(f.n)}${f.st&&!f.n.includes(f.st)?` <small style="display:inline;color:var(--ink-3)">${f.st}</small>`:''}</b><small>${foodSub(f)}, ${basisTxt(f)}</small></span>${S.foods[i]?'<span class="pill ok">שלך</span>':''}</button>`}).join(''):''}).join('')||'<p class="empty">לא נמצא מוצר בשם הזה.</p>';
 }
 function donut(parts,center,R=52,SW=24){
   const C=2*Math.PI*R,tot=parts.reduce((a,p)=>a+p.v,0)||1;let off=0;
@@ -1181,11 +1240,19 @@ function renderSheet(){
     let body='';
     const rec=recentFor(s.path);
     if(rec.length)body+=`<div class="lbl">בחרת לאחרונה</div><div class="recent">${rec.map(id=>{const o=findIn(groups,id);return`<button class="${id===sel?'on':''}" data-act="choose" data-val="${o.id}"><b>${esc(o.n)}</b><small>${esc(o.a)}</small></button>`}).join('')}</div>`;
+    let po=null,remAll=1;
+    if(s.add){po=portionOf(r,s.path);remAll=Math.max(0,1-po.pct/100);
+      body+=`<div class="addban">${remAll<=0?'המנה כבר מלאה. אפשר להוסיף, אבל זה מעל התפריט.':`מילאת ${po.approx?'כ-':''}${po.pct}% מהמנה. ליד כל מוצר כתוב כמה נשאר ממנו.`}</div>`}
+    const optRowP=o=>{if(!s.add)return optRow(o,o.id===sel,'choose',o.id);
+      if(selA.includes(o.id))return optRow({n:o.n,a:'',x:'כבר בשילוב'},true,'choose',o.id);
+      const c=optComps(r,s.path,o.id)[0],tg=c&&compTarget(c);
+      if(!tg)return optRow(o,false,'choose',o.id);
+      return optRow({n:o.n,a:fmtQ(tg*remAll,c.f)+' '+unitOf(c.f),x:'נשאר, מתוך '+o.a+(o.w?' '+o.w:'')},false,'choose',o.id)};
     if(groups.length>1&&total>12){
       let ci=catTab[s.path]; if(ci==null){ci=sel?Math.max(0,groups.findIndex(g=>g.items.some(i=>i.id===sel))):0}
       body+=`<div class="tabs-x" role="tablist">${groups.map((g,i)=>`<button role="tab" aria-selected="${i===ci}" class="${i===ci?'on':''}" data-act="ctab" data-val="${i}">${esc(g.t||g.g)}</button>`).join('')}</div>`;
-      body+=`<div class="ogrp">${esc(groups[ci].g)}</div><div class="olist">${groups[ci].items.map(o=>optRow(o,o.id===sel,'choose',o.id)).join('')}</div>`;
-    }else body+=`<div class="olist">${groups.map(g=>`${groups.length>1?`<div class="ogrp">${esc(g.g)}</div>`:''}${g.items.map(o=>optRow(o,o.id===sel,'choose',o.id)).join('')}`).join('')}</div>`;
+      body+=`<div class="ogrp">${esc(groups[ci].g)}</div><div class="olist">${groups[ci].items.map(optRowP).join('')}</div>`;
+    }else body+=`<div class="olist">${groups.map(g=>`${groups.length>1?`<div class="ogrp">${esc(g.g)}</div>`:''}${g.items.map(optRowP).join('')}`).join('')}</div>`;
     if(sel&&!s.add)body+=`<div class="dangerzone"><button class="btn danger sm" data-act="unpick">ניקוי הבחירה</button></div>`;
     html=shell(s.add?title+': חלופה נוספת':title,s.add?'בוחרים מוצר לשילוב עם '+selA.map(i=>labelOf(r,s.path,i).n).join(' + '):'בוחרים מוצר '+mealName[meal]+', ואפשר לשלב חלופות בשלב הבא',body);
   }else if(s.type==='amt'){
@@ -1195,25 +1262,27 @@ function renderSheet(){
     const multi=!isSn&&selOf(r,p).length>1;
     let body=comps.map((c,i)=>{
       if(!c.f)return`<p class="muted" style="margin-top:14px">קודם בוחרים ${r.snack.opt==='s2'?'איזה בשר':'איזו גבינה'}. <button class="btn sm" data-act="snacksub">בחירה</button></p>`;
-      const f=food(c.f), u=unitOf(c.f), head=multi&&(i===0||comps[i-1].opt!==c.opt);
-      const sameOpt=comps.filter(x=>x.opt===c.opt).length>1;
-      const lab=((comps.length>1&&(!multi||sameOpt))?f.n+': ':'')+(f.un?'כמה '+f.un+'?':c.ck?'משקל אחרי בישול':f.b==='ml'?'כמות':'משקל');
-      return`${head?`<div class="ogrp" style="display:flex;align-items:center;gap:8px;margin-top:${i?22:14}px"><span style="flex:1;font-size:15px;color:var(--ink);font-weight:600">${esc(labelOf(r,p,c.opt).n)}</span><button class="btn sm danger" data-act="unopt" data-val="${c.opt}">הסרה</button></div>`:''}
-      <div class="field" style="${head?'margin-top:6px':''}"><label for="q${i}">${esc(lab)}</label><div class="qwrap"><input id="q${i}" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done" data-q="${p}" data-f="${c.f}" value="${q[c.f]??''}" ${i===0&&!(q[c.f]>0)?'autofocus':''}><span class="qu">${u}</span></div><small class="hint">יעד בתפריט${multi?' למנה מלאה':''}: ${esc(c.t)}</small></div>`}).join('');
+      const f=food(c.f), u=unitOf(c.f), head=multi&&(i===0||comps[i-1].opt!==c.opt), of=multi?optFrac(r,p,c.opt):null;
+      const lab=f.b==='u'?'כמה '+(f.un||'יחידות')+'?':c.ck?'משקל אחרי בישול':f.b==='ml'?'כמות במ״ל':'משקל בגרמים';
+      return`${head?`<div class="ogrp" style="display:flex;align-items:center;gap:8px;margin-top:${i?24:14}px"><span style="flex:1;font-size:16px;color:var(--ink);font-weight:700">${esc(labelOf(r,p,c.opt).n)}</span>${of?`<span class="optpct" data-optpct="${c.opt}">${Math.round(of.fr*100)}%</span>`:''}<button class="btn sm danger" data-act="unopt" data-val="${c.opt}">הסרה</button></div>`:''}
+      <button class="prod" data-act="variant" data-val="${c.g}" style="${head?'margin-top:6px':''}"><span class="v"><b>${esc(f.n)}</b><small>${hasVals(f)?foodSub(f)+', '+basisTxt(f):'חסרים ערכים תזונתיים'}</small></span><span class="chg">סוג אחר</span></button>
+      <div class="field" style="margin-top:8px"><label for="q${i}">${esc(lab)}</label><div class="qwrap"><input id="q${i}" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done" data-q="${p}" data-f="${c.f}" data-g="${c.g}" value="${q[c.f]??''}"><span class="qu">${u}</span></div><small class="hint ${multi?'hlive':''}" data-hint="${i}">${esc(isSn?'יעד בתפריט: '+c.t+(compTarget(c)&&!/ג׳|מ״ל/.test(c.t)&&f.b!=='u'?` (כ-${n0(compTarget(c))} ${u})`:''):compHint(r,p,c,multi))}</small></div>`}).join('');
     body+=`<div id="live" class="live">${liveHtml()}</div>`;
     if(!isSn&&!multi)body+=`<div style="margin-top:12px"><button class="btn sm line" data-act="repick" data-val="${p}">החלפת מוצר</button></div>`;
     if(!isSn&&selOf(r,p).includes('lean_fish')){const f=r[meal].fish;
       body+=`<div class="lbl" style="margin-top:18px">איזה דג? (לא חובה)</div><div class="chips">${FISH.map(x=>`<button class="chip ${f===x?'on':''}" style="--c:var(--pro)" data-act="fish" data-val="${esc(x)}">${esc(x)}</button>`).join('')}</div>`}
     const kindN=p.endsWith('carb')?'פחמימה':p.endsWith('out')?'העמסה בחוץ':'חלבון';
-    html=shell(multi?kindN+': שילוב':esc(l.n),isSn?(l.bread?'עם '+BREAD:''):multi?'כל חלופה נמדדת מול המנה המלאה שלה':'',body,
+    body+=`<div class="dangerzone"><button class="btn danger sm" data-act="${isSn?'snackclear':'unpick'}">${isSn?'ביטול ארוחת הביניים':'ניקוי הבחירה'}</button></div>`;
+    html=shell(multi?kindN+': שילוב':isSn?'ביניים: '+esc(l.n):esc(l.n),isSn?'כל רכיב נשקל בגרמים, לפי סוג המוצר':multi?'ליד כל מוצר כתוב כמה עוד אפשר ממנו':'',body,
       isSn?`<div class="foot2"><button class="btn line" data-act="snack">החלפת מוצר</button><button class="btn pri" data-act="close">סיום</button></div>`
           :`<div class="foot2"><button class="btn line" data-act="addopt" data-val="${p}">${I.plus}שילוב חלופה</button><button class="btn pri" data-act="close">סיום</button></div>`);
   }else if(s.type==='veg'){
     const p=s.path, q=vegQ(r,p), sng=p==='snack.green', meal=p.split('.')[0];
     const lists=sng?['green']:['color','green'];
     let body=`<div id="live" class="vstick">${liveHtml()}</div>`;
-    body+=lists.map(k=>`<div class="ogrp" style="margin-top:8px">${VEG[k].label}${sng?'':`, מנה מלאה ${VEG[k].g} ג׳`}</div>`+VEGIDS[k].map(id=>{const f=food(id);
-      return`<div class="vrow ${q[id]>0?'has':''}"><label for="v_${id}">${esc(f.n)}<small>${hasVals(f)?n1(f.k)+' קל׳ ל-100 ג׳':'חסרים ערכים'}${UNLIM.includes(id)?', ללא הגבלה':''}</small></label><input id="v_${id}" type="number" inputmode="decimal" step="any" min="0" placeholder="ג׳" data-q="${p}" data-f="${id}" value="${q[id]??''}"></div>`}).join('')).join('');
+    body+=lists.map(k=>{const gsum=VEGIDS[k].reduce((a,id)=>a+(+q[id]||0),0);
+      return`<section class="vgrp vg-${k}"><div class="vgh"><i></i><b>ירקות ${VEG[k].label}</b><span>${sng?'':`מנה מלאה ${VEG[k].g} ג׳`}</span><em data-gsum="${k}" ${gsum>0?'':'hidden'}>${n1(gsum)} ג׳</em></div>`+VEGIDS[k].map(id=>{const f=food(id);
+      return`<div class="vrow ${q[id]>0?'has':''}"><label for="v_${id}">${esc(f.n)}<small>${hasVals(f)?n1(f.k)+' קל׳ ל-100 ג׳':'חסרים ערכים'}${UNLIM.includes(id)?', ללא הגבלה':''}</small></label><input id="v_${id}" type="number" inputmode="decimal" step="any" min="0" placeholder="ג׳" data-q="${p}" data-f="${id}" value="${q[id]??''}"></div>`}).join('')+'</section>'}).join('');
     if(Object.keys(q).length||(!sng&&r[meal].veg.mode))body+=`<div class="dangerzone"><button class="btn danger sm" data-act="vclear">ניקוי הירקות</button></div>`;
     html=shell(sng?'ירק ירוק לביניים':'ירקות '+mealName[meal],sng?'גרמים ליד הירק שאכלת':'גרמים ליד כל ירק, במשקל חי',body,'<button class="btn pri block" data-act="close">סיום</button>');
   }else if(s.type==='snack'){
@@ -1225,7 +1294,7 @@ function renderSheet(){
     html=shell(sn.id==='s2'?'איזה בשר?':'איזו גבינה?',sn.a,`<div class="olist">${sn.sub.map(o=>optRow({n:o.n},r.snack.sub===o.id,'snacksubpick',o.id)).join('')}</div>`);
   }else if(s.type==='free'){
     const fb=freeBal(cur);
-    html=shell('קלוריות חופשיות',fb?`נותרו ${fb.left} להיום`:'',`<form id="freeForm"><div class="field"><label for="fk">כמה קלוריות?</label><input id="fk" class="big" type="number" inputmode="numeric" min="1" placeholder="0" enterkeyhint="done" autofocus></div>
+    html=shell('קלוריות חופשיות',fb?`נותרו ${fb.left} להיום`:'',`<form id="freeForm"><div class="field"><label for="fk">כמה קלוריות?</label><input id="fk" class="big" type="number" inputmode="numeric" min="1" placeholder="0" enterkeyhint="done"></div>
       <div class="field"><label for="fd">מה אכלת?</label><input id="fd" type="text" placeholder="למשל: במבה" enterkeyhint="done"></div>
       <div class="lbl">מה יש בזה, בגרמים (למנה שאכלת)</div>
       <div class="trio"><div class="field" style="margin-top:0"><label for="xp">חלבון</label><input id="xp" type="number" inputmode="decimal" step="any" min="0" placeholder="0"></div><div class="field" style="margin-top:0"><label for="xc">פחמימה</label><input id="xc" type="number" inputmode="decimal" step="any" min="0" placeholder="0"></div><div class="field" style="margin-top:0"><label for="xf">שומן</label><input id="xf" type="number" inputmode="decimal" step="any" min="0" placeholder="0"></div></div>
@@ -1243,9 +1312,26 @@ function renderSheet(){
     const qa=(act,cls,ic,t,d)=>`<button class="qa" data-act="${act}"><span class="tile ${cls}">${ic}</span><span class="v"><b>${t}</b><small>${d}</small></span><span class="chev">${I.left}</span></button>`;
     html=shell('הוספה מהירה',cur===today()?'להיום':'ל'+dm(cur),`<div style="margin-top:8px">
       ${qa('addx','t-x',I.leaf,'אכלתי בנוסף','מוצר מהמאגר עם כמות')}
+      ${qa('milkadd','t-m',I.drop,'קפה עם חלב','כמה מ״ל ואיזה סוג')}
       ${qa('addfree','t-f',I.star,'קלוריות חופשיות','מתוך המכסה היומית')}
       ${qa('adddev','t-d',I.alert,'חריגה מהתפריט','משהו שלא רשום בתפריט')}
-      ${qa('foodnew','t-m',I.plus,'מוצר חדש למאגר','שם וערכים תזונתיים')}</div>`);
+      ${qa('foodnew','t-x',I.plus,'מוצר חדש למאגר','ברקוד, חיפוש או הזנה ידנית')}</div>`);
+  }else if(s.type==='variant'){
+    const g=s.g, base=food(g), c=compsFor(r,s.path).find(x=>x.g===g), curF=c?c.f:g;
+    const cands=[g,...allFoodIds().filter(i=>i!==g&&food(i).of===g)];
+    const vrow=id=>{const f=food(id);return`<button class="opt ${id===curF?'on':''}" data-act="varpick" data-val="${id}"><span class="tick">${I.check}</span><span class="v"><b>${esc(f.n)}</b><small>${hasVals(f)?foodSub(f)+', '+basisTxt(f):'חסרים ערכים תזונתיים'}</small></span></button>`};
+    html=shell(`איזה סוג של ${esc(base.n)}?`,'הבחירה נשמרת, ובפעם הבאה הסוג הזה ייבחר לבד',`<div class="olist" style="margin-top:6px">${cands.map(vrow).join('')}</div>
+      <div style="margin-top:12px"><button class="btn line block" data-act="varnew">${I.plus}סוג חדש: ברקוד, חיפוש או הזנה ידנית</button></div>
+      <div class="field" style="margin-top:18px"><label for="vsearch">או מוצר אחר מהמאגר</label><input id="vsearch" type="search" placeholder="חיפוש לפי שם" enterkeyhint="search"></div><div id="vlist" class="olist"></div>`,
+      '<button class="btn pri block" data-act="varback">חזרה</button>');
+  }else if(s.type==='milk'){
+    const types=allFoodIds().filter(i=>food(i).b==='ml'), f=s.f&&food(s.f)?s.f:(S.pref.milk&&food(S.pref.milk)?S.pref.milk:'milk');
+    s.f=f; const used=r.milk;
+    html=shell('קפה עם חלב',`החלב נספר בקלוריות. היום ${n0(used)} מתוך 200 מ״ל`,`<div class="lbl">איזה חלב?</div>
+      <div class="chips">${types.map(id=>`<button class="chip ${id===f?'on':''}" data-act="milktype" data-val="${id}">${esc(food(id).n)}</button>`).join('')}<button class="chip" data-act="milknew">${I.plus.replace('<svg','<svg style="width:14px;height:14px;vertical-align:-2px"')} סוג חדש</button></div>
+      <div class="field"><label for="ma">כמה מ״ל?</label><div class="qwrap"><input id="ma" class="big" type="number" inputmode="numeric" step="1" min="0" placeholder="0" enterkeyhint="done" value="${s.a??''}"><span class="qu">מ״ל</span></div><small class="hint">${used>=200?'כבר הגעת ל-200 מ״ל היום':`נשארו היום עד ${n0(200-used)} מ״ל`}</small></div>
+      <div id="live" class="live">${(()=>{const n=nut(f,s.a);return n?(n.miss?missLine({miss:[f]}):macroLine(n)):''})()}</div>`,
+      '<button class="btn pri block" data-act="milksave">הוספה</button>');
   }else if(s.type==='nut'){
     const N=dayNut(r),T=N.tot,mk=T.p*4+T.c*4+T.f*9,pc=x=>mk?Math.round(x/mk*100):0;
     const M=[['חלבון',T.p,T.p*4,'m-p'],['פחמימה',T.c,T.c*4,'m-c'],['שומן',T.f,T.f*9,'m-f']];
@@ -1269,17 +1355,21 @@ function renderSheet(){
     html=shell('מה אכלת?','בוחרים מוצר, ואז מזינים כמות',`<div class="field"><input id="fsearch" type="search" placeholder="חיפוש מוצר" enterkeyhint="search"></div><div id="flist" style="margin-top:6px">${foodList('')}</div>`,`<button class="btn line block" data-act="foodnew">${I.plus}מוצר חדש</button>`);
   }else if(s.type==='xamt'){
     const f=food(s.f); if(!f){hideSheet();return}
-    html=shell(esc(f.n),foodSub(f)+', ל-100 '+(f.b==='ml'?'מ״ל':'ג׳'),`<div class="field"><label for="xa">${f.un?'כמה '+f.un+'?':'כמה אכלת?'}</label><div class="qwrap"><input id="xa" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done" autofocus><span class="qu">${unitOf(s.f)}</span></div></div><div id="live" class="live"></div>`,'<button class="btn pri block" data-act="xsave">הוספה ליום</button>');
+    html=shell(esc(f.n),foodSub(f)+', '+basisTxt(f),`<div class="field"><label for="xa">${f.b==='u'?'כמה '+(f.un||'יחידות')+'?':f.b==='ml'?'כמה מ״ל?':'כמה גרם?'}</label><div class="qwrap"><input id="xa" class="big" type="number" inputmode="decimal" step="any" min="0" placeholder="0" enterkeyhint="done"><span class="qu">${unitOf(s.f)}</span></div></div><div id="live" class="live"></div>`,'<button class="btn pri block" data-act="xsave">הוספה ליום</button>');
   }else if(s.type==='food'){
-    const base=s.id?BASE_FOODS[s.id]:null, f=s.id?food(s.id):{n:'',b:'g',k:null,p:null,c:null,f:null}, b=s.b||f.b||'g', v=x=>x==null?'':x;
+    const base=s.id?BASE_FOODS[s.id]:null, f=s.id?food(s.id):{n:'',b:s.b0||'g',k:null,p:null,c:null,f:null}, b=s.b||f.b||'g', v=x=>x==null?'':x; if(!s.b)s.b=b;
+    const ofN=s.of&&food(s.of)?food(s.of).n:'';
     html=shell(s.id?'עריכת מוצר':'מוצר חדש',s.id&&base?(S.foods[s.id]?'הערכים עודכנו אצלך':'ערכי הבסיס של האפליקציה'):'',`<form id="foodForm">
-      <div class="field"><label for="offq">מילוי אוטומטי מ-Open Food Facts: שם מוצר או ברקוד</label><div class="offrow"><input id="offq" type="search" inputmode="search" enterkeyhint="search" placeholder="למשל: קוטג׳ 3%"><button type="button" class="btn" data-act="offsearch">${I.search}חיפוש</button></div><div id="offres" class="offres"></div></div>
-      <div class="field"><label for="fn">שם המוצר</label><input id="fn" type="text" value="${esc(f.n)}" ${s.id?'':'autofocus'}></div>
-      <div class="lbl">הערכים הם ל-</div><div class="seg"><button type="button" class="${b==='g'?'on':''}" data-act="fbasis" data-val="g">100 גרם</button><button type="button" class="${b==='ml'?'on':''}" data-act="fbasis" data-val="ml">100 מ״ל</button></div>
+      ${ofN?`<p class="muted" style="margin-top:10px">סוג של ${esc(ofN)}. הערכים שתזין ישמשו מעכשיו לחישוב.</p>`:''}
+      <div class="field"><label for="offq">מילוי אוטומטי מ-Open Food Facts: שם מוצר או ברקוד</label><div class="offrow"><input id="offq" type="search" inputmode="search" enterkeyhint="search" placeholder="שם מוצר או מספר ברקוד"><button type="button" class="btn" data-act="offsearch">${I.search}חיפוש</button></div>
+        ${'BarcodeDetector' in window?`<button type="button" class="btn line block" style="margin-top:8px;height:44px" data-act="scan">סריקת ברקוד במצלמה</button><div class="scanbox" id="scanbox" hidden><video playsinline muted></video><button type="button" class="btn sm" data-act="scanstop">עצירה</button></div>`:''}
+        <div id="offres" class="offres"></div></div>
+      <div class="field"><label for="fn">שם המוצר</label><input id="fn" type="text" value="${esc(f.n)}" placeholder="${ofN?'למשל: '+esc(ofN)+' של מותג מסוים':''}"></div>
+      <div class="lbl">הערכים הם ל-</div><div class="seg"><button type="button" class="${b==='g'?'on':''}" data-act="fbasis" data-val="g">100 גרם</button><button type="button" class="${b==='ml'?'on':''}" data-act="fbasis" data-val="ml">100 מ״ל</button><button type="button" class="${b==='u'?'on':''}" data-act="fbasis" data-val="u">יחידה אחת</button></div>
       <div class="field"><label for="fkc">קלוריות</label><input id="fkc" type="number" inputmode="decimal" step="any" min="0" value="${v(f.k)}"></div>
       <div class="trio"><div class="field"><label for="fpr">חלבון</label><input id="fpr" type="number" inputmode="decimal" step="any" min="0" value="${v(f.p)}"></div><div class="field"><label for="fcb">פחמימה</label><input id="fcb" type="number" inputmode="decimal" step="any" min="0" value="${v(f.c)}"></div><div class="field"><label for="fft">שומן</label><input id="fft" type="number" inputmode="decimal" step="any" min="0" value="${v(f.f)}"></div></div>
-      <div class="lbl">נספר ביחידות? (לא חובה)</div>
-      <div class="trio" style="grid-template-columns:1fr 1fr"><div class="field" style="margin-top:0"><label for="fun">שם היחידה ברבים</label><input id="fun" type="text" placeholder="למשל: פרוסות" value="${esc(f.un||'')}"></div><div class="field" style="margin-top:0"><label for="fug">משקל יחידה בגרם</label><input id="fug" type="number" inputmode="decimal" step="any" min="0" value="${v(f.ug)}"></div></div>
+      <div class="lbl" id="ulbl">${b==='u'?'איך קוראים ליחידה?':'יחידה (לא חובה): לתרגום יעדים כמו "2 פרוסות" לגרמים'}</div>
+      <div class="trio" style="grid-template-columns:1fr 1fr"><div class="field" style="margin-top:0"><label for="fun">שם היחידה ברבים</label><input id="fun" type="text" placeholder="למשל: פרוסות" value="${esc(f.un||'')}"></div><div class="field" style="margin-top:0" id="fugw" ${b==='g'?'':'hidden'}><label for="fug">משקל יחידה בגרם</label><input id="fug" type="number" inputmode="decimal" step="any" min="0" value="${v(f.ug)}"></div></div>
       ${s.id&&S.foods[s.id]?`<div class="dangerzone"><button type="button" class="btn danger sm" data-act="foodreset">${base?'חזרה לערכי הבסיס':'מחיקת המוצר'}</button></div>`:''}</form>`,'<button class="btn pri block" data-act="foodsave">שמירה</button>');
   }else if(s.type==='cal'){
     const [y,m]=s.m.split('-').map(Number), first=new Date(y,m-1,1), days=new Date(y,m,0).getDate(), t=today();
@@ -1302,7 +1392,7 @@ function renderSheet(){
       <p class="muted">מיזוג מוסיף רק ימים ומוצרים חסרים, ומה שכבר קיים כאן נשאר כמו שהוא. החלפה מוחקת את מה שיש בטלפון ושמה במקומו את הקובץ.</p></div>`,
       `<div class="stack"><button class="btn pri block" data-act="rmerge">מיזוג: הוספת ${fresh} ימים חסרים</button><button class="btn danger block" data-act="rreplace">החלפה מלאה</button></div>`);
   }else if(s.type==='dev'){
-    html=shell('חריגה מהתפריט','מה היה?',`<form id="devForm"><div class="field"><label for="dv">תיאור</label><input id="dv" type="text" placeholder="למשל: פרוסת עוגה באירוע" enterkeyhint="done" autofocus></div></form>`,'<button class="btn pri block" data-act="devsave">רישום</button>');
+    html=shell('חריגה מהתפריט','מה היה?',`<form id="devForm"><div class="field"><label for="dv">תיאור</label><input id="dv" type="text" placeholder="למשל: פרוסת עוגה באירוע" enterkeyhint="done"></div></form>`,'<button class="btn pri block" data-act="devsave">רישום</button>');
   }
   sheetEl.innerHTML=html;
   const b=sheetEl.querySelector('.sh-body'); if(b&&scroll)b.scrollTop=scroll;
@@ -1403,7 +1493,7 @@ function viewRules(){
       ['קלוריות חופשיות','150 ביום. מה שלא נוצל נצבר, ללא הגבלה'],
       ['תיבול יבש','ללא הגבלה'],
       ['שמן','ספריי או שכבה דקה. לא לסלט. אין מטוגן'],
-      ['חלב','עד 200 מ״ל ביום, לקפה בלבד']]);
+      ['חלב','עד 200 מ״ל ביום, לקפה בלבד. נספר בקלוריות לפי סוג החלב']]);
     h+=rg('שתייה','--snk',[
       ['חופשי','קפה שחור, סודה, תה לא ממותק'],
       ['דיאט וזירו','עדיף להימנע. אם כבר, רק בזמן ארוחה ולא בין ארוחות'],
@@ -1490,6 +1580,19 @@ function backupFile(){const name=`menu-backup-${today()}.json`;return{name,blob:
 function doExport(){const{name,blob}=backupFile();const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);S.lastExport=Date.now();save();render();toast('קובץ הגיבוי ירד')}
 async function doShare(){const{name,blob}=backupFile();const f=new File([blob],name,{type:'application/json'});
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});S.lastExport=Date.now();save();render();toast('הגיבוי שותף')}else doExport()}catch(e){if(e.name!=='AbortError')doExport()}}
+function setVariant(path,g,v){
+  upd(r=>{if(!r.pf[path])r.pf[path]={};const c=compsFor(r,path).find(x=>x.g===g),old=c?c.f:g;
+    r.pf[path][g]=v;if(r.q[path]&&r.q[path][old]!=null&&old!==v){r.q[path][v]=r.q[path][old];delete r.q[path][old]}});
+  if(v===g)delete S.pref[g];else S.pref[g]=v;save();
+}
+async function scanBarcode(){
+  const box=document.getElementById('scanbox');if(!box)return;
+  let stream;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){toast('אין גישה למצלמה');return}
+  box.hidden=false;const v=box.querySelector('video');v.srcObject=stream;try{await v.play()}catch(e){}
+  let det;try{det=new BarcodeDetector({formats:['ean_13','ean_8','upc_a','upc_e']})}catch(e){det=new BarcodeDetector()}
+  scanStop=()=>{stream.getTracks().forEach(t=>t.stop());box.hidden=true;scanStop=null};
+  const loop=async()=>{if(!scanStop)return;try{const c=await det.detect(v);if(c&&c.length){const code=c[0].rawValue;scanStop();haptic();document.getElementById('offq').value=code;offSearch();return}}catch(e){}setTimeout(loop,250)};loop();
+}
 let offHits=[];
 async function offSearch(){
   const q=(document.getElementById('offq').value||'').trim(), box=document.getElementById('offres'); if(!q||!box)return;
@@ -1533,25 +1636,42 @@ function act(a,v,el){
     case'nut':openSheet({type:'nut'});break;
     case'bool':haptic();upd(r=>{setP(r,v,!getP(r,v));if(v==='training'&&!r.training)r.loadingToday=false});break;
     case'lmode':upd(r=>{if(r.loading.mode!==v){r.loading.mode=v;['loading.protein','loading.carb','loading.out'].forEach(p=>{setSel(r,p,[]);delete r.q[p];delete r.snap[p];if(r.snapm)delete r.snapm[p]});r.loading.fish=null}});break;
-    case'milk':haptic();upd(r=>{r.milk=+v});break;
+    case'milkadd':openSheet({type:'milk'});break;
+    case'milktype':{const a=parseFloat((document.getElementById('ma')||{}).value);sheetSpec.f=v;sheetSpec.a=a>0?a:undefined;S.pref.milk=v;save();renderSheet();break}
+    case'milknew':{const a=parseFloat((document.getElementById('ma')||{}).value);openSheet({type:'food',id:null,b0:'ml',b:'ml',of:'milk',grp:'oth',back:{type:'milk',a:a>0?a:undefined},after:'milk'});break}
+    case'milksave':{const a=parseFloat(document.getElementById('ma').value);if(!(a>0)){needF('ma','צריך להזין כמה מ״ל');break}
+      const f=sheetSpec.f;S.pref.milk=f;upd(r=>r.milks.push({f,a}));closeSheet();toast(`נוספו ${n0(a)} מ״ל ${food(f).n}`);break}
+    case'milkrep':{const l=lastMilk();if(!l)break;const u=undoable();haptic();upd(r=>r.milks.push({f:l.f,a:l.a}));toast(`נוספו ${n0(l.a)} מ״ל`,u);break}
+    case'delmilk':{const u=undoable();upd(r=>r.milks.splice(+v,1));toast('הרישום נמחק',u);break}
+    case'variant':openSheet({type:'variant',path:sheetSpec.path,g:v});break;
+    case'varback':openSheet({type:'amt',path:sheetSpec.path});break;
+    case'varpick':{const path=sheetSpec.path,g=sheetSpec.g;setVariant(path,g,v);openSheet({type:'amt',path});toast('סוג המוצר עודכן');break}
+    case'varnew':{const g=sheetSpec.g,b0=food(g).b;openSheet({type:'food',id:null,of:g,grp:food(g).grp,b0,b:b0,back:{type:'amt',path:sheetSpec.path},after:'var',vp:{path:sheetSpec.path,g}});break}
+    case'scan':scanBarcode();break;
+    case'scanstop':if(scanStop)scanStop();break;
     case'addx':openSheet({type:'addx'});break;
     case'xpick':openSheet({type:'xamt',f:v});break;
-    case'xsave':{const a=parseFloat(document.getElementById('xa').value);if(!(a>0)){document.getElementById('xa').focus();break}
+    case'xsave':{const a=parseFloat(document.getElementById('xa').value);if(!(a>0)){needF('xa','צריך להזין כמות');break}
       const f=sheetSpec.f;upd(r=>r.extra.push({f,a}));closeSheet();toast('נוסף ליום');break}
     case'delx':{const u=undoable();upd(r=>r.extra.splice(+v,1));toast('הרישום נמחק',u);break}
     case'amt':openSheet({type:'amt',path:v});break;
     case'repick':catTab={};openSheet({type:'pick',path:v});break;
     case'foodedit':openSheet({type:'food',id:v,back:sheetSpec&&['amt','veg','xamt'].includes(sheetSpec.type)?Object.assign({},sheetSpec):null});break;
     case'foodnew':openSheet({type:'food',id:null,back:sheetSpec&&sheetSpec.type==='addx'?{type:'addx'}:null});break;
-    case'fbasis':{const g=id=>document.getElementById(id).value;sheetSpec.b=v;sheetEl.querySelectorAll('[data-act=fbasis]').forEach(b=>b.classList.toggle('on',b.dataset.val===v));break}
+    case'fbasis':{sheetSpec.b=v;sheetEl.querySelectorAll('[data-act=fbasis]').forEach(b=>b.classList.toggle('on',b.dataset.val===v));const w=document.getElementById('fugw');if(w)w.hidden=v!=='g';const l=document.getElementById('ulbl');if(l)l.textContent=v==='u'?'איך קוראים ליחידה?':'יחידה (לא חובה): לתרגום יעדים כמו "2 פרוסות" לגרמים';break}
     case'foodsave':{const g=id=>document.getElementById(id).value.trim(),num=id=>{const x=parseFloat(g(id));return isNaN(x)?null:x};
-      const n=g('fn');if(!n){document.getElementById('fn').focus();break}
-      const k=num('fkc');if(k==null){document.getElementById('fkc').focus();break}
+      const n=g('fn');if(!n){needF('fn','צריך שם מוצר');break}
+      const k=num('fkc');if(k==null){needF('fkc','צריך להזין קלוריות');break}
       const id=sheetSpec.id||('u'+Date.now().toString(36)),old=sheetSpec.id?food(sheetSpec.id):{};
-      const o={n,grp:old.grp||'my',b:sheetSpec.b||old.b||'g',k,p:num('fpr')||0,c:num('fcb')||0,f:num('fft')||0};
-      if(old.st)o.st=old.st; const un=g('fun'),ug=num('fug'); if(un){o.un=un;o.ug=ug}
-      S.foods[id]=o;save();const back=sheetSpec.back;render();
-      if(back){if(back.type==='addx')openSheet({type:'xamt',f:id});else openSheet(back)}else closeSheet();
+      const o={n,grp:old.grp||sheetSpec.grp||'my',b:sheetSpec.b||old.b||'g',k,p:num('fpr')||0,c:num('fcb')||0,f:num('fft')||0};
+      if(old.st)o.st=old.st; if(old.of||sheetSpec.of)o.of=old.of||sheetSpec.of;
+      const un=g('fun'),ug=num('fug'); if(o.b==='u'&&!un){needF('fun','צריך שם ליחידה, למשל: משולשים');break}
+      if(un)o.un=un; if(o.b==='g'&&ug>0)o.ug=ug;
+      S.foods[id]=o;save();const back=sheetSpec.back,after=sheetSpec.after,vp=sheetSpec.vp;
+      if(after==='var'&&vp)setVariant(vp.path,vp.g,id);
+      if(after==='milk'){S.pref.milk=id;save()}
+      render();
+      if(back){if(back.type==='addx')openSheet({type:'xamt',f:id});else if(back.type==='milk')openSheet({type:'milk',f:id,a:back.a});else openSheet(back)}else closeSheet();
       toast('המוצר נשמר');break}
     case'foodreset':{delete S.foods[sheetSpec.id];save();closeSheet();render();toast(BASE_FOODS[sheetSpec.id]?'חזר לערכי הבסיס':'המוצר נמחק');break}
     case'foodexport':exportFoods();break;
@@ -1576,13 +1696,13 @@ function act(a,v,el){
       upd(r=>{if(!r.snapm)r.snapm={};if(!r.snapm[p])r.snapm[p]={};
         let arr=selOf(r,p);
         if(add){if(!arr.includes(v))arr=[...arr,v]}
-        else{if(!(arr.length===1&&arr[0]===v)){delete r.q[p];r.snapm[p]={}}arr=[v]}
+        else{if(!(arr.length===1&&arr[0]===v)){delete r.q[p];r.snapm[p]={};if(r.pf)delete r.pf[p]}arr=[v]}
         setSel(r,p,arr);r.snapm[p][v]={n:o.n,a:o.a,w:o.w};r.snap[p]=r.snapm[p][arr[0]]||r.snap[p];
         if(p.endsWith('protein')&&!arr.includes('lean_fish'))r[meal].fish=null});
       openSheet({type:'amt',path:p}); break}
     case'addopt':catTab={};openSheet({type:'pick',path:v,add:1});break;
     case'unopt':{const p=sheetSpec.path,meal=p.split('.')[0],u=undoable();
-      upd(r=>{const o=findIn(CAT[p],v),fs=(o&&o.comp?o.comp.map(c=>c.f):[v]);
+      upd(r=>{const o=findIn(CAT[p],v),gs=(o&&o.comp?o.comp.map(c=>c.f):[v]),fs=gs.map(g=>effF(r,p,g));if(r.pf&&r.pf[p])gs.forEach(g=>delete r.pf[p][g]);
         const arr=selOf(r,p).filter(i=>i!==v);setSel(r,p,arr);
         if(r.q[p]){fs.forEach(f=>delete r.q[p][f]);if(!Object.keys(r.q[p]).length)delete r.q[p]}
         if(r.snapm&&r.snapm[p])delete r.snapm[p][v];
@@ -1590,22 +1710,22 @@ function act(a,v,el){
         if(v==='lean_fish')r[meal].fish=null});
       toast('החלופה הוסרה',u);if(!selOf(getDay(cur),p).length)closeSheet();break}
     case'fish':{haptic();const meal=sheetSpec.path.split('.')[0];upd(r=>{r[meal].fish=r[meal].fish===v?null:v});break}
-    case'unpick':{const u=undoable();const p=sheetSpec.path,meal=p.split('.')[0];toast('הבחירה נוקתה',u);upd(r=>{setSel(r,p,[]);delete r.snap[p];delete r.q[p];if(r.snapm)delete r.snapm[p];if(p.endsWith('protein'))r[meal].fish=null});closeSheet();break}
+    case'unpick':{const u=undoable();const p=sheetSpec.path,meal=p.split('.')[0];toast('הבחירה נוקתה',u);upd(r=>{setSel(r,p,[]);delete r.snap[p];delete r.q[p];if(r.snapm)delete r.snapm[p];if(r.pf)delete r.pf[p];if(p.endsWith('protein'))r[meal].fish=null});closeSheet();break}
     case'vclear':{const u=undoable(),p=sheetSpec.path;upd(r=>{delete r.q[p];if(p==='snack.green')r.snack.green=null;else setP(r,p,vegBlank())});closeSheet();toast('הירקות נוקו',u);break}
     case'snackpick':{haptic();const o=SNACKS.find(x=>x.id===v);upd(r=>{if(r.snack.opt!==v){r.snack.opt=v;r.snack.sub=null;delete r.q['snack.opt']}r.snap['snack.opt']={n:o.n,a:o.a}});openSheet(o.sub?{type:'snacksub'}:{type:'amt',path:'snack.opt'});break}
-    case'snackclear':toast('ארוחת הביניים בוטלה',undoable());upd(r=>{r.snack={opt:null,sub:null,green:null};delete r.snap['snack.opt'];delete r.q['snack.opt'];delete r.q['snack.green']});closeSheet();break;
+    case'snackclear':toast('ארוחת הביניים בוטלה',undoable());upd(r=>{r.snack={opt:null,sub:null,green:null};delete r.snap['snack.opt'];delete r.q['snack.opt'];delete r.q['snack.green'];if(r.pf)delete r.pf['snack.opt']});closeSheet();break;
     case'snacksubpick':haptic();upd(r=>{r.snack.sub=v});openSheet({type:'amt',path:'snack.opt'});break;
     case'freesave':{const k=parseInt(document.getElementById('fk').value,10),d=document.getElementById('fd').value.trim();
-      if(!(k>0)){document.getElementById('fk').focus();break}
+      if(!(k>0)){needF('fk','צריך להזין כמה קלוריות');break}
       const e={d,k};[['p','xp'],['c','xc'],['f','xf']].forEach(([key,id])=>{const x=parseFloat(document.getElementById(id).value);if(!isNaN(x))e[key]=x});
       upd(r=>r.free.push(e));closeSheet();toast(`נוספו ${k} קל׳`);break}
-    case'devsave':{const d=document.getElementById('dv').value.trim();if(!d){document.getElementById('dv').focus();break}
+    case'devsave':{const d=document.getElementById('dv').value.trim();if(!d){needF('dv','צריך לכתוב מה היה');break}
       upd(r=>r.dev.push(d));closeSheet();toast('החריגה נרשמה');break}
     case'copyy':{const u=undoable(),y=ydayMeal(v);if(!y)break;haptic();
       upd(r=>{const m=r[v],ym=y[v];m.protein=ym.protein;m.fish=ym.fish||null;
         if(!r.sel)r.sel={};if(!r.snapm)r.snapm={};
         [v+'.protein',v+'.carb'].forEach(p=>{if(y.sel&&y.sel[p])r.sel[p]=[...y.sel[p]];else if(r.sel)delete r.sel[p];if(y.snapm&&y.snapm[p])r.snapm[p]=JSON.parse(JSON.stringify(y.snapm[p]))});
-        const cp=p=>{if(y.q[p])r.q[p]=JSON.parse(JSON.stringify(y.q[p]))};cp(v+'.veg');cp(v+'.protein');
+        const cp=p=>{if(y.q[p])r.q[p]=JSON.parse(JSON.stringify(y.q[p]));if(y.pf&&y.pf[p])r.pf[p]=JSON.parse(JSON.stringify(y.pf[p]))};cp(v+'.veg');cp(v+'.protein');
         const po=findIn(CAT[v+'.protein'],ym.protein);r.snap[v+'.protein']={n:po.n,a:po.a,w:po.w};
         if(v==='dinner'){m.carb=ym.carb;cp('dinner.carb');const co=findIn(DINNER_C,ym.carb);r.snap['dinner.carb']={n:co.n,a:co.a,w:co.w}}});
       toast('הועתק מאתמול',u);break}
@@ -1617,7 +1737,7 @@ function act(a,v,el){
       const ks=Object.keys(S.days).sort();if(ks.length&&ks[0]<S.start)S.start=ks[0];
       if(d.lastExport&&(!S.lastExport||d.lastExport>S.lastExport))S.lastExport=d.lastExport;
       save();closeSheet();render();toast(n?`נוספו ${n} ימים`:'לא היו ימים חסרים');break}
-    case'rreplace':{const d=sheetSpec.data;S=Object.assign({v:3,start:today(),created:Date.now(),lastExport:null,days:{},foods:{},nutStart:S.nutStart},d);S.v=3;if(!S.foods)S.foods={};
+    case'rreplace':{const d=sheetSpec.data;S=Object.assign({v:3,start:today(),created:Date.now(),lastExport:null,days:{},foods:{},nutStart:S.nutStart},d);if(!S.foods)S.foods={};if(!S.pref)S.pref={};migrate4();
       const ks=Object.keys(S.days).sort();if(ks.length&&ks[0]<S.start)S.start=ks[0];
       save();closeSheet();cur=today();wk=weekStart(cur);tab='day';render();toast('הנתונים הוחלפו מהקובץ');break}
     case'export':doExport();break;
@@ -1629,15 +1749,20 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(
 scrim.addEventListener('click',closeSheet);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&sheetSpec)closeSheet();
   if(e.key==='Enter'&&e.target.id==='offq'){e.preventDefault();act('offsearch');return}
-  if(e.key==='Enter'&&sheetSpec&&e.target.matches('.sh-body input')){e.preventDefault();const ty=sheetSpec.type;if(ty==='free')act('freesave');else if(ty==='dev')act('devsave');else if(ty==='xamt')act('xsave');else if(ty==='food')act('foodsave');else if(ty==='amt'||ty==='veg'){e.target.blur();closeSheet()}}});
+  if(e.key==='Enter'&&sheetSpec&&e.target.matches('.sh-body input')){e.preventDefault();const ty=sheetSpec.type;if(ty==='free')act('freesave');else if(ty==='dev')act('devsave');else if(ty==='xamt')act('xsave');else if(ty==='food')act('foodsave');else if(ty==='milk')act('milksave');else if(ty==='amt'||ty==='veg'){e.target.blur();closeSheet()}}});
 document.addEventListener('submit',e=>{e.preventDefault();if(e.target.id==='freeForm')act('freesave');if(e.target.id==='devForm')act('devsave');if(e.target.id==='foodForm')act('foodsave')});
 document.addEventListener('input',e=>{
   const t=e.target;
-  if(t.dataset.q){const p=t.dataset.q,f=t.dataset.f,v=parseFloat(t.value),r=getDay(cur);
+  if(t.dataset.q){const p=t.dataset.q,f=t.dataset.f,g=t.dataset.g,v=parseFloat(t.value),r=getDay(cur);
     r.q[p]=r.q[p]||{};if(v>0)r.q[p][f]=v;else delete r.q[p][f];if(!Object.keys(r.q[p]).length)delete r.q[p];
+    if(g&&v>0){if(!r.pf[p])r.pf[p]={};r.pf[p][g]=f}
+    const gk=t.closest('.vgrp');if(gk){const k=gk.classList.contains('vg-color')?'color':'green',sum=VEGIDS[k].reduce((a,id)=>a+(+((r.q[p]||{})[id])||0),0),em=gk.querySelector('[data-gsum]');if(em){em.hidden=!(sum>0);em.textContent=n1(sum)+' ג׳'}}
     S.days[cur]=r;if(cur<S.start)S.start=cur;save();render();updLive();
     const row=t.closest('.vrow');if(row)row.classList.toggle('has',v>0);return}
-  if(t.id==='xa'){updLive();return}
+  if(t.id==='xa'||t.id==='ma'){updLive();return}
+  if(t.id==='vsearch'){const l=document.getElementById('vlist'),q=t.value.trim(),sp=sheetSpec;if(!l||!sp)return;if(!q){l.innerHTML='';return}
+    const ex=new Set([sp.g,...allFoodIds().filter(i=>food(i).of===sp.g)]);const ids=allFoodIds().filter(i=>!ex.has(i)&&food(i).n.includes(q)).slice(0,20);
+    l.innerHTML=ids.length?ids.map(id=>{const f=food(id);return`<button class="opt" data-act="varpick" data-val="${id}"><span class="tick">${I.check}</span><span class="v"><b>${esc(f.n)}</b><small>${hasVals(f)?foodSub(f)+', '+basisTxt(f):'חסרים ערכים תזונתיים'}</small></span></button>`}).join(''):'<p class="empty">לא נמצא מוצר בשם הזה.</p>';return}
   if(t.id==='fsearch'){const l=document.getElementById('flist');if(l)l.innerHTML=foodList(t.value);return}
 });
 document.addEventListener('change',e=>{
@@ -1646,7 +1771,6 @@ document.addEventListener('change',e=>{
   if(t.id==='wh'||t.id==='wm'){const h=document.getElementById('wh').value;let m=document.getElementById('wm').value;
     if(!h){upd(r=>{r.wake=''});return} if(!m)m='00'; upd(r=>{r.wake=h+':'+m});return}
   if(t.id==='te'){upd(r=>{r.trainEnd=t.value});return}
-  if(t.id==='milkin'){const v=parseFloat(t.value);upd(r=>{r.milk=v>0?v:0});return}
 });
 // גרירת הגיליון למטה לסגירה
 (()=>{let y0=null,dy=0;
@@ -1663,6 +1787,17 @@ document.addEventListener('change',e=>{
 setInterval(()=>{if(tab==='day'&&cur===today()&&!sheetSpec){const b=document.getElementById('fastpill');if(b)b.outerHTML=fastPill(getDay(cur))}},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!sheetSpec)render()});
 if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+function migrate4(){
+  if((S.v||0)>=4)return;
+  if(!S.pref)S.pref={};
+  const conv=(id,a)=>{const f=food(id);return f&&f.b!=='u'&&f.un&&f.ug>0?a*f.ug:a};
+  for(const r of Object.values(S.days)){
+    if(r.q)for(const m of Object.values(r.q))for(const id of Object.keys(m))m[id]=conv(id,m[id]);
+    if(Array.isArray(r.extra))r.extra.forEach(x=>{x.a=conv(x.f,x.a)});
+  }
+  S.v=4;save();
+}
+migrate4();
 save(); render();
 </script>
 </body>
