@@ -1076,7 +1076,7 @@ function viewDay(){
     <div class="field" style="margin-top:8px"><div class="qwrap"><input id="milkin" type="number" inputmode="numeric" min="0" placeholder="כמות אחרת" value="${[0,50,100,150,200].includes(r.milk)?'':r.milk}" style="width:100%"><span class="qu">מ״ל</span></div></div></div></div>`;
 
   const fb=freeBal(cur);
-  const frRow=(x,i)=>`<li><span>${esc(x.d||'ללא תיאור')}${(x.p!=null||x.c!=null||x.f!=null)?` <small style="color:var(--ink-2)">ח ${n1(+x.p||0)}, פ ${n1(+x.c||0)}, ש ${n1(+x.f||0)}</small>`:''}</span><span class="num">${+x.k}</span><button class="del" data-act="delfree" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`;
+  const frRow=(x,i)=>`<li><span>${esc(x.d||'ללא תיאור')}${(x.p!=null||x.c!=null||x.f!=null)?` <small style="color:var(--ink-2)">חלבון ${n1(+x.p||0)}, פחמימה ${n1(+x.c||0)}, שומן ${n1(+x.f||0)}</small>`:''}</span><span class="num">${+x.k}</span><button class="del" data-act="delfree" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`;
   if(fb){
     const tot=Math.max(fb.avail,fb.used)||1, uPct=Math.min(fb.used,fb.avail)/tot*100, oPct=Math.max(0,fb.used-fb.avail)/tot*100;
     h+=`<div class="jcard"><div class="jhead"><span class="tile t-f">${I.star}</span><h3>קלוריות חופשיות</h3><button class="btn sm pri" data-act="addfree">${I.plus}הוספה</button></div>
@@ -1134,7 +1134,7 @@ function liveHtml(){
   return'';
 }
 function updLive(){const el=document.getElementById('live');if(el)el.innerHTML=liveHtml()}
-const foodSub=f=>hasVals(f)?`${n1(f.k)} קל׳, ח ${n1(+f.p||0)}, פ ${n1(+f.c||0)}, ש ${n1(+f.f||0)}`:(f.un&&f.k!=null?'חסר משקל ליחידה':'חסרים ערכים');
+const foodSub=f=>hasVals(f)?`${n1(f.k)} קל׳, חלבון ${n1(+f.p||0)}, פחמימה ${n1(+f.c||0)}, שומן ${n1(+f.f||0)}`:(f.un&&f.k!=null?'חסר משקל ליחידה':'חסרים ערכים');
 function foodList(filter){
   const q=(filter||'').trim();
   return Object.keys(GRP).map(g=>{const ids=allFoodIds().filter(i=>{const f=food(i);return (f.grp||'my')===g&&(!q||f.n.includes(q))});
@@ -1467,7 +1467,7 @@ async function offSearch(){
     if(/^\d{8,14}$/.test(q)){const j=await (await fetch(`https://world.openfoodfacts.org/api/v2/product/${q}?fields=${F}`)).json();if(j&&j.product)list=[j.product]}
     else{const j=await (await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=12&fields=${F}`)).json();list=(j&&j.products)||[]}
     offHits=list.map(p=>{const n=p.nutriments||{};return{n:[p.product_name_he||p.product_name,p.brands].filter(Boolean).join(', '),k:n['energy-kcal_100g'],p:n.proteins_100g,c:n.carbohydrates_100g,f:n.fat_100g}}).filter(x=>x.n&&x.k!=null).slice(0,8);
-    box.innerHTML=offHits.length?offHits.map((x,i)=>`<button type="button" class="frow" data-act="offpick" data-val="${i}"><span class="v"><b>${esc(x.n)}</b><small>${n1(x.k)} קל׳, ח ${n1(+x.p||0)}, פ ${n1(+x.c||0)}, ש ${n1(+x.f||0)}, ל-100 ג׳</small></span></button>`).join(''):'<p class="muted">לא נמצא מוצר עם ערכים. אפשר להזין ידנית.</p>';
+    box.innerHTML=offHits.length?offHits.map((x,i)=>`<button type="button" class="frow" data-act="offpick" data-val="${i}"><span class="v"><b>${esc(x.n)}</b><small>${n1(x.k)} קל׳, חלבון ${n1(+x.p||0)}, פחמימה ${n1(+x.c||0)}, שומן ${n1(+x.f||0)}, ל-100 ג׳</small></span></button>`).join(''):'<p class="muted">לא נמצא מוצר עם ערכים. אפשר להזין ידנית.</p>';
   }catch(e){box.innerHTML='<p class="muted">החיפוש לא זמין כרגע. צריך חיבור לאינטרנט. אפשר להזין ידנית.</p>'}
 }
 async function exportFoods(){
