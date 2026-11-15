@@ -7,8 +7,8 @@
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#E9EDEA",
-  "theme_color": "#E9EDEA",
+  "background_color": "#F5F2EC",
+  "theme_color": "#F5F2EC",
   "shortcuts": [
     {
       "name": "היום",
