@@ -756,13 +756,18 @@ const DINNER_C=[
     it('rice_paper','דפי אורז 22 ס״מ','13 דפים'),it('rice_cakes','פריכיות אורז','13 פריכיות')]}];
 const LOAD_P=[
   {g:'בשר',items:[...LEAN.map(([id,n,w])=>it(id,n,'320 ג׳',w)),it('beef_fillet','פילה בקר','225 ג׳',RAW),it('sinta','סינטה','225 ג׳',RAW)]},
-  {g:'דגים וטונה',items:[it('lean_fish','דג רזה','375 ג׳',RAW,'בקלה, הליבוט, אמנון, דניס, מרלוז ועוד'),it('tuna_water','טונה במים','375 ג׳',DRAINED)]},
+  {g:'דגים וטונה',items:[it('lean_fish','דג רזה','370 ג׳',RAW,'בקלה, הליבוט, אמנון, דניס, מרלוז ועוד'),it('tuna_water','טונה במים','370 ג׳',DRAINED)]},
   {g:'מוצרי חלב',items:[it('gvanatz','גבינה צהובה 9%','7 פרוסות','','פרוסה = 30 ג׳')]}];
-const LOAD_C=[{g:'פחמימה',items:[
-  it('pasta','פסטה עם מעט רוטב','630 ג׳',COOKED),it('couscous','קוסקוס','630 ג׳',COOKED),
-  it('potato','תפוחי אדמה','1265 ג׳',RAW),it('rice','אורז לבן (לא בסמטי)','845 ג׳',COOKED),
-  it('ptitim','פתיתים','630 ג׳',COOKED),it('egg_noodles','נודלס ביצים','780 ג׳',COOKED),
-  it('rice_noodles','נודלס אורז','780 ג׳',COOKED),it('pita','פיתה לבנה','400 ג׳')]}];
+const LOAD_C=[
+  {g:'מבושל',t:'מבושל',items:[
+    it('pasta','פסטה עם מעט רוטב עגבניות','630 ג׳',COOKED),it('couscous','קוסקוס','630 ג׳',COOKED),
+    it('potato','תפוחי אדמה','1255 ג׳',RAW),it('rice','אורז לבן (לא בסמטי)','835 ג׳',COOKED),
+    it('ptitim','פתיתים','630 ג׳',COOKED),it('gnocchi','ניוקי תפוחי אדמה','630 ג׳',COOKED),
+    it('egg_noodles','נודלס ביצים','775 ג׳',COOKED,'אטריות ביצים'),it('rice_noodles','נודלס אורז','775 ג׳',COOKED,'אטריות אורז')]},
+  {g:'לחם, פיתות ומאפים',t:'לחם ומאפים',items:[
+    it('white_bread','לחם לבן','420 ג׳'),it('bagel','בייגל אמריקאי בלי שומשום','395 ג׳'),
+    it('white_bread_sl','לחם לבן בפרוסות','13 פרוסות','','',[{f:'white_bread',t:'13 פרוסות'}]),
+    it('pita','פיתה לבנה','400 ג׳')]}];
 const LOAD_OUT=[{g:'העמסה בחוץ',items:[it('pizza','פיצה','5 משולשים'),it('sushi','סושי','5 רולים'),it('mcroyal','דאבל מקרויאל + 2 פוטטו ענק','','','',[{f:'mcroyal',t:'1'},{f:'mc_potato',t:'2 מנות'}])]}];
 const BREAD='2 פרוסות לחם קל (כל סוג)';
 const BRC={f:'bread_light',t:'2 פרוסות'};
