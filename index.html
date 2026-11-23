@@ -706,9 +706,12 @@ const BASE_FOODS={
   edamame:fd('אדממה מקולפת','pro'), tempeh:fd('טמפה','pro'),
   ytv_drink:fd('משקה חלבון יטבתה','pro',null,null,null,null,{b:'ml',un:'בקבוקים',ug:350}),
   potato:fd('תפוחי אדמה','carb'), gnocchi:fd('ניוקי תפוחי אדמה','carb'), rice:fd('אורז לבן','carb'), ptitim:fd('פתיתים','carb'),
-  couscous:fd('קוסקוס','carb'), pasta:fd('פסטה עם מעט רוטב','carb'), egg_noodles:fd('נודלס ביצים','carb'), rice_noodles:fd('נודלס אורז','carb'),
+  couscous:fd('קוסקוס','carb'), pasta:fd('פסטה עם מעט רוטב עגבניות','carb'), egg_noodles:fd('נודלס ביצים','carb'), rice_noodles:fd('נודלס אורז','carb'),
   pita:fd('פיתה לבנה','carb'), light_pita:fd('פיתה קלה','carb',null,null,null,null,{un:'פיתות',ug:null}),
   bread_light:fd('לחם קל','carb',null,null,null,null,{un:'פרוסות',ug:null}),
+  white_bread:fd('לחם לבן','carb',null,null,null,null,{un:'פרוסות',ug:33}), bagel:fd('בייגל אמריקאי בלי שומשום','carb'),
+  tortilla:fd('טורטיה מקמח לבן','carb',null,null,null,null,{un:'טורטיות',ug:40}),
+  rice_paper:fd('דפי אורז','carb',null,null,null,null,{un:'דפים',ug:null}), rice_cakes:fd('פריכיות אורז','carb',null,null,null,null,{un:'פריכיות',ug:null}),
   milk:fd('חלב','oth',null,null,null,null,{b:'ml'}), hearts_palm:fd('לבבות דקל','oth'), skinny_pasta:fd('סקיני פסטה','oth'),
   pizza:fd('פיצה','oth',null,null,null,null,{b:'u',un:'משולשים'}), sushi:fd('סושי','oth',null,null,null,null,{b:'u',un:'רולים'}),
   mcroyal:fd('דאבל מקרויאל','oth',null,null,null,null,{b:'u',un:'יחידות'}), mc_potato:fd('פוטטו ענק','oth',null,null,null,null,{b:'u',un:'מנות'})
@@ -738,13 +741,19 @@ function proteinGroups(m){
   ];
 }
 const LUNCH_P=proteinGroups({meat:320,fish:370,tuna:370,labane:470,c3:560,c5:445,cheese:345,gvz:'7 פרוסות',yog:'3 גביעים',eggs:'7 חלבונים + 3 חלמונים',ew:7,ey:3,eda:265,tmp:235,ytv:'3 בקבוקים'});
-const DINNER_P=proteinGroups({meat:145,fish:170,tuna:170,labane:215,c3:255,c5:200,cheese:155,gvz:'3 פרוסות',yog:'1 גביע',eggs:'3 חלבונים + חלמון 1',ew:3,ey:1,eda:120});
-const DINNER_C=[{g:'פחמימה',items:[
-  it('potato','תפוחי אדמה','590 ג׳',RAW),it('gnocchi','ניוקי תפוחי אדמה','295 ג׳',COOKED),
-  it('rice','אורז לבן (לא בסמטי)','395 ג׳',COOKED),it('ptitim','פתיתים','295 ג׳',COOKED),
-  it('couscous','קוסקוס','295 ג׳',COOKED),it('pasta','פסטה עם מעט רוטב','295 ג׳',COOKED),
-  it('egg_noodles','נודלס ביצים','365 ג׳',COOKED),it('rice_noodles','נודלס אורז','365 ג׳',COOKED),
-  it('pita','פיתה לבנה','190 ג׳'),it('light_pita','פיתות קלות','5 פיתות')]}];
+const DINNER_P=proteinGroups({meat:190,fish:225,tuna:225,labane:280,c3:335,c5:270,cheese:205,gvz:'4 פרוסות',yog:'1 גביע',eggs:'4 חלבונים + 2 חלמונים',ew:4,ey:2,eda:160,tmp:140,ytv:'2 בקבוקים'});
+const DINNER_C=[
+  {g:'מבושל',t:'מבושל',items:[
+    it('potato','תפוחי אדמה','500 ג׳',RAW),it('gnocchi','ניוקי תפוחי אדמה','250 ג׳',COOKED),
+    it('rice','אורז לבן (לא בסמטי)','335 ג׳',COOKED),it('ptitim','פתיתים','250 ג׳',COOKED),
+    it('couscous','קוסקוס','250 ג׳',COOKED),it('pasta','פסטה עם מעט רוטב עגבניות','250 ג׳',COOKED),
+    it('egg_noodles','נודלס ביצים','310 ג׳',COOKED,'אטריות ביצים'),it('rice_noodles','נודלס אורז','310 ג׳',COOKED,'אטריות אורז')]},
+  {g:'לחם, פיתות ומאפים',t:'לחם ומאפים',items:[
+    it('white_bread','לחם לבן','165 ג׳'),it('white_bread_sl','לחם לבן בפרוסות','5 פרוסות','','',[{f:'white_bread',t:'5 פרוסות'}]),
+    it('bread_light','לחם קל מכל סוג קמח','10 פרוסות'),it('bagel','בייגל אמריקאי בלי שומשום','160 ג׳'),
+    it('pita','פיתה לבנה','160 ג׳'),it('light_pita','פיתות קלות','4 פיתות'),
+    it('tortilla','טורטיה מקמח לבן','3 טורטיות','','קוטר כ-20 ס״מ, כ-40 ג׳'),
+    it('rice_paper','דפי אורז 22 ס״מ','13 דפים'),it('rice_cakes','פריכיות אורז','13 פריכיות')]}];
 const LOAD_P=[
   {g:'בשר',items:[...LEAN.map(([id,n,w])=>it(id,n,'320 ג׳',w)),it('beef_fillet','פילה בקר','225 ג׳',RAW),it('sinta','סינטה','225 ג׳',RAW)]},
   {g:'דגים וטונה',items:[it('lean_fish','דג רזה','375 ג׳',RAW,'בקלה, הליבוט, אמנון, דניס, מרלוז ועוד'),it('tuna_water','טונה במים','375 ג׳',DRAINED)]},
