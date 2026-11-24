@@ -854,6 +854,8 @@ function norm(r){
   if(!o.pf)o.pf={};
   if(!o.qr)o.qr={};
   if(!o.vsel)o.vsel={};
+  {const sq=o.q['snack.opt'];if(sq)for(const k of Object.keys(sq)){const f=food(k);if(k==='bread_light'||(f&&f.of==='bread_light')){(o.q['snack.bread']=o.q['snack.bread']||{})[k]=sq[k];delete sq[k]}}
+   const sp=o.pf['snack.opt'];if(sp&&sp.bread_light){(o.pf['snack.bread']=o.pf['snack.bread']||{}).bread_light=sp.bread_light;delete sp.bread_light}}
   for(const p of ['lunch.veg','dinner.veg','snack.green']){const q=o.q[p];if(q&&q.v_cherry!=null){q.v_tomato_c=(+q.v_tomato_c||0)+(+q.v_cherry||0);delete q.v_cherry}}
   if(/^s[1-5]$/.test(o.snack.opt||'')){const id=o.snack.sub||SN_OLD[o.snack.opt],x=findIn(SNACK_P,id);o.snack.opt=id;o.snack.sub=null;o.snap['snack.opt']=x?{n:x.n,a:x.a,w:x.w}:{n:(BASE_FOODS[id]||{}).n||id,a:'50 ג׳',w:RAW}}
   if(!Array.isArray(r.milks))o.milks=r.milk>0?[{f:'milk',a:+r.milk}]:[];
@@ -930,7 +932,8 @@ const snBread=r=>selOf(r,'snack.opt').some(i=>i!=='yogurt');
 function optComps(r,path,id){let o=findIn(CAT[path],id);if(!o&&path==='snack.opt'&&food(id))o={id,a:'50 ג׳',w:RAW};if(!o)return[];
   return (o.comp||[{f:id,t:o.a+(o.w?' '+o.w:''),ck:o.w===RAW}]).map(c=>Object.assign({opt:id},c,{g:c.f,f:effF(r,path,c.f)}))}
 function compsFor(r,path){
-  if(path==='snack.opt'){const ids=selOf(r,path);if(!ids.length)return[];const out=snBread(r)?[{opt:'_bread',g:'bread_light',f:effF(r,path,'bread_light'),t:'2 פרוסות'}]:[];for(const id of ids)out.push(...optComps(r,path,id));return out}
+  if(path==='snack.bread')return snBread(r)?[{opt:'_bread',g:'bread_light',f:effF(r,path,'bread_light'),t:'2 פרוסות'}]:[];
+  if(path==='snack.opt'){const ids=selOf(r,path);if(!ids.length)return[];const out=[];for(const id of ids)out.push(...optComps(r,path,id));return out}
   const out=[];for(const id of selOf(r,path))out.push(...optComps(r,path,id));return out;
 }
 /* יעד הרכיב ביחידת ההזנה (גרם, מ״ל או יחידות). יעד ביחידות מתורגם לגרמים לפי משקל יחידה */
@@ -959,7 +962,7 @@ function sumMap(q){const t=NZ();for(const[id,a]of Object.entries(q||{}))nadd(t,n
 function dayNut(r){
   const secs=[];
   secs.push({n:'צהריים',t:nadd(sumMap(r.q['lunch.veg']),sumComps(r,'lunch.protein'))});
-  secs.push({n:'ביניים',t:nadd(sumComps(r,'snack.opt'),sumMap(r.q['snack.green']))});
+  secs.push({n:'ביניים',t:nadd(nadd(sumComps(r,'snack.opt'),sumComps(r,'snack.bread')),sumMap(r.q['snack.green']))});
   if(r.loadingToday){const t=r.loading.mode==='out'?sumComps(r,'loading.out'):nadd(sumComps(r,'loading.protein'),sumComps(r,'loading.carb'));secs.push({n:'העמסה',t})}
   else secs.push({n:'ערב',t:nadd(nadd(sumMap(r.q['dinner.veg']),sumComps(r,'dinner.protein')),sumComps(r,'dinner.carb'))});
   const ex=NZ();r.extra.forEach(x=>nadd(ex,nut(x.f,x.a)));r.milks.forEach(x=>nadd(ex,nut(x.f,x.a)));secs.push({n:'תוספות וחלב',t:ex});
@@ -1172,7 +1175,9 @@ function viewDay(){
     `${copyBtn(r,'lunch')}<div class="rows">${row('veg','ירקות','lunch.veg',vegRowInfo(r,'lunch'),'veg')}${pickRow('pro','חלבון','lunch.protein',r,r.lunch.fish)}</div>`);
   // ביניים
   const snIds=selOf(r,'snack.opt'), snB=snIds.length&&snBread(r);
-  let sr=pickRow('snk','מנה','snack.opt',r,[r.snack.fish,snB?'עם 2 פרוסות לחם קל':''].filter(Boolean).join(', '));
+  let sr=pickRow('snk','חלבון','snack.opt',r,r.snack.fish||'');
+  if(snB){const bc=compsFor(r,'snack.bread')[0],ba=+((r.q['snack.bread']||{})[bc.f])||0,bt=sumComps(r,'snack.bread');
+    sr+=row('carb','לחם קל','snack.bread',{n:food(bc.f).n,s:sub('יעד 2 פרוסות',bt.k>0?n0(bt.k)+' קל׳':''),need:!(ba>0),q:ba>0?n1(ba):'',u:'ג׳'},'bread')}
   if(snB){const gs=vegStat(r.q['snack.green']);
     sr+=row('veg','ירק ירוק','snack.green',gs.tot>0?{n:gs.names.join(', '),q:n1(gs.tot),u:'ג׳'}:(r.snack.green?{n:r.snack.green}:null),'veg')}
   h+=mealCard('m-snack',I.cup,'ביניים','לא חובה. אפשר להקדים לפני הצהריים',N.secs[1].t,snIds.length>0,`<div class="rows">${sr}</div>`);
@@ -1313,10 +1318,10 @@ function renderSheet(){
     if(sel&&!s.add)body+=`<div class="dangerzone"><button class="btn danger sm" data-act="unpick">ניקוי הבחירה</button></div>`;
     html=shell(s.add?title+': חלופה נוספת':title,s.add?'בוחרים מוצר לשילוב עם '+selA.map(i=>labelOf(r,s.path,i).n).join(' + '):isSnP?'כל אפשרות עם 2 פרוסות לחם קל וירק ירוק, חוץ מהיוגורט. אפשר לשלב חלופות בשלב הבא':'בוחרים מוצר '+mealName[meal]+', ואפשר לשלב חלופות בשלב הבא',body);
   }else if(s.type==='amt'){
-    const p=s.path, isSn=p==='snack.opt', comps=compsFor(r,p), q=r.q[p]||{}, qr=(r.qr&&r.qr[p])||{}, meal=p.split('.')[0];
-    const l=label(r,p);
-    if(!l){hideSheet();return}
-    const multi=selOf(r,p).length>1;
+    const p=s.path, isBrd=p==='snack.bread', isSn=p==='snack.opt'||isBrd, comps=compsFor(r,p), q=r.q[p]||{}, qr=(r.qr&&r.qr[p])||{}, meal=p.split('.')[0];
+    const l=isBrd?{n:'לחם קל'}:label(r,p);
+    if(!l||(isBrd&&!comps.length)){hideSheet();return}
+    const multi=!isBrd&&selOf(r,p).length>1;
     let body=comps.map((c,i)=>{
       const f=food(c.f), u=unitOf(c.f), isBr=c.opt==='_bread', head=multi&&!isBr&&(i===0||comps[i-1].opt!==c.opt), of=multi&&!isBr?optFrac(r,p,c.opt):null;
       const lab=f.b==='u'?'כמה '+(f.un||'יחידות')+'?':c.ck?'משקל אחרי בישול':f.b==='ml'?'כמות במ״ל':'משקל בגרמים';
@@ -1324,13 +1329,13 @@ function renderSheet(){
       <button class="prod" data-act="variant" data-val="${c.g}" style="${head?'margin-top:6px':''}"><span class="v"><b>${esc(f.n)}</b><small>${hasVals(f)?foodSub(f)+', '+basisTxt(f):'חסרים ערכים תזונתיים'}</small></span><span class="chg">סוג אחר</span></button>
       <div class="field" style="margin-top:8px">${c.ck?`<div class="duo"><div><label for="qr${i}">לפני בישול</label><div class="qwrap"><input id="qr${i}" class="big" type="text" data-num inputmode="none" placeholder="0" data-qr="${p}" data-f="${c.f}" data-g="${c.g}" value="${qr[c.f]??''}"><span class="qu">${u}</span></div></div><div><label for="q${i}">אחרי בישול</label><div class="qwrap"><input id="q${i}" class="big" type="text" data-num inputmode="none" placeholder="0" data-q="${p}" data-f="${c.f}" data-g="${c.g}" value="${q[c.f]??''}"><span class="qu">${u}</span></div></div></div><small class="hint" style="margin-top:4px">לפני בישול: לחישוב האחוז מהמנה. אחרי בישול: לחישוב הערכים</small>`:`<label for="q${i}">${esc(lab)}</label><div class="qwrap"><input id="q${i}" class="big" type="text" data-num inputmode="none" step="any" min="0" placeholder="0" enterkeyhint="done" data-q="${p}" data-f="${c.f}" data-g="${c.g}" value="${q[c.f]??''}"><span class="qu">${u}</span></div>`}<small class="hint ${multi&&!isBr?'hlive':''}" data-hint="${i}">${esc(compHint(r,p,c,multi))}</small></div>`}).join('');
     body+=`<div id="live" class="live">${liveHtml()}</div>`;
-    if(!multi)body+=`<div style="margin-top:12px"><button class="btn sm line" data-act="repick" data-val="${p}">החלפת מוצר</button></div>`;
-    if(selOf(r,p).includes('lean_fish')){const f=r[meal].fish;
+    if(!multi&&!isBrd)body+=`<div style="margin-top:12px"><button class="btn sm line" data-act="repick" data-val="${p}">החלפת מוצר</button></div>`;
+    if(!isBrd&&selOf(r,p).includes('lean_fish')){const f=r[meal].fish;
       body+=`<div class="lbl" style="margin-top:18px">איזה דג? (לא חובה)</div><div class="chips">${(isSn?SNACK_FISH:FISH).map(x=>`<button class="chip ${f===x?'on':''}" style="--c:var(--pro)" data-act="fish" data-val="${esc(x)}">${esc(x)}</button>`).join('')}</div>`}
     const kindN=isSn?'ביניים':p.endsWith('carb')?'פחמימה':p.endsWith('out')?'העמסה בחוץ':'חלבון';
-    body+=`<div class="dangerzone"><button class="btn danger sm" data-act="${isSn?'snackclear':'unpick'}">${isSn?'ביטול ארוחת הביניים':'ניקוי הבחירה'}</button></div>`;
-    html=shell(multi?kindN+': שילוב':isSn?'ביניים: '+esc(l.n):esc(l.n),multi?(isSn&&snBread(r)?'ליד כל מוצר כתוב כמה עוד אפשר ממנו. הלחם נשאר 2 פרוסות':'ליד כל מוצר כתוב כמה עוד אפשר ממנו'):isSn?'כל רכיב נשקל בגרמים, לפי סוג המוצר':'',body,
-      `<div class="foot2"><button class="btn line" data-act="addopt" data-val="${p}">${I.plus}שילוב חלופה</button><button class="btn pri" data-act="close">סיום</button></div>`);
+    if(!isBrd)body+=`<div class="dangerzone"><button class="btn danger sm" data-act="${isSn?'snackclear':'unpick'}">${isSn?'ביטול ארוחת הביניים':'ניקוי הבחירה'}</button></div>`;
+    html=shell(multi?kindN+': שילוב':isSn?'ביניים: '+esc(l.n):esc(l.n),multi?'ליד כל מוצר כתוב כמה עוד אפשר ממנו':isBrd?'בוחרים את סוג הלחם ומזינים משקל':isSn?'משקל בגרמים, לפי סוג המוצר':'',body,
+      isBrd?'<button class="btn pri block" data-act="close">סיום</button>':`<div class="foot2"><button class="btn line" data-act="addopt" data-val="${p}">${I.plus}שילוב חלופה</button><button class="btn pri" data-act="close">סיום</button></div>`);
   }else if(s.type==='veg'){
     const p=s.path, q=vegQ(r,p), sng=p==='snack.green', meal=p.split('.')[0], lists=sng?['green']:['color','green'], sel=vselOf(r,p);
     const pickMode=s.pick||!sel.length, ttl=sng?'ירק ירוק לביניים':'ירקות '+mealName[meal];
@@ -1690,6 +1695,7 @@ function act(a,v,el){
       const f=sheetSpec.f;upd(r=>r.extra.push({f,a}));closeSheet();toast('נוסף ליום');break}
     case'delx':{const u=undoable();upd(r=>r.extra.splice(+v,1));toast('הרישום נמחק',u);break}
     case'amt':openSheet({type:'amt',path:v});break;
+    case'bread':{const g='bread_light';if(!(S.pref&&S.pref[g])&&!((getDay(cur).pf['snack.bread']||{})[g])&&allFoodIds().some(i=>food(i).of===g)){openSheet({type:'variant',path:'snack.bread',g});break}openSheet({type:'amt',path:'snack.bread'});break}
     case'repick':catTab={};openSheet({type:'pick',path:v});break;
     case'foodedit':openSheet({type:'food',id:v,back:sheetSpec&&['amt','veg','xamt'].includes(sheetSpec.type)?Object.assign({},sheetSpec):null});break;
     case'foodnew':openSheet({type:'food',id:null,back:sheetSpec&&sheetSpec.type==='addx'?{type:'addx'}:null});break;
@@ -1751,7 +1757,7 @@ function act(a,v,el){
     case'fish':{haptic();const meal=sheetSpec.path.split('.')[0];upd(r=>{r[meal].fish=r[meal].fish===v?null:v});break}
     case'unpick':{const u=undoable();const p=sheetSpec.path,meal=p.split('.')[0];toast('הבחירה נוקתה',u);upd(r=>{setSel(r,p,[]);delete r.snap[p];delete r.q[p];delete r.qr[p];if(r.snapm)delete r.snapm[p];if(r.pf)delete r.pf[p];if(p.endsWith('protein'))r[meal].fish=null});closeSheet();break}
     case'vclear':{const u=undoable(),p=sheetSpec.path;upd(r=>{delete r.q[p];if(r.vsel)delete r.vsel[p];if(p==='snack.green')r.snack.green=null;else setP(r,p,vegBlank())});closeSheet();toast('הירקות נוקו',u);break}
-    case'snackclear':toast('ארוחת הביניים בוטלה',undoable());upd(r=>{r.snack={opt:null,sub:null,green:null,fish:null};if(r.sel)delete r.sel['snack.opt'];if(r.snapm)delete r.snapm['snack.opt'];delete r.snap['snack.opt'];delete r.qr['snack.opt'];delete r.q['snack.opt'];delete r.q['snack.green'];if(r.pf)delete r.pf['snack.opt']});closeSheet();break;
+    case'snackclear':toast('ארוחת הביניים בוטלה',undoable());upd(r=>{r.snack={opt:null,sub:null,green:null,fish:null};if(r.sel)delete r.sel['snack.opt'];if(r.snapm)delete r.snapm['snack.opt'];delete r.snap['snack.opt'];delete r.qr['snack.opt'];delete r.q['snack.opt'];delete r.q['snack.green'];delete r.q['snack.bread'];if(r.vsel)delete r.vsel['snack.green'];if(r.pf){delete r.pf['snack.opt'];delete r.pf['snack.bread']}});closeSheet();break;
     case'freesave':{const k=parseInt(document.getElementById('fk').value,10),d=document.getElementById('fd').value.trim();
       if(!(k>0)){needF('fk','צריך להזין כמה קלוריות');break}
       const e={d,k};[['p','xp'],['c','xc'],['f','xf']].forEach(([key,id])=>{const x=parseFloat(document.getElementById(id).value);if(!isNaN(x))e[key]=x});
