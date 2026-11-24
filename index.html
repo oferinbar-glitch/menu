@@ -423,7 +423,7 @@ input[data-num].kpf{box-shadow:0 0 0 2px var(--brand)}
 .kp-bar button{height:36px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:600;color:var(--brand);background:var(--surface)}
 .kp-bar button:disabled{opacity:.35}
 .kp-bar .hide{display:flex;align-items:center;gap:4px}
-.kp-keys{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.kp-keys{direction:ltr;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
 .kp-keys button{display:flex;align-items:center;justify-content:center;text-align:center;height:52px;border-radius:12px;background:var(--surface);font-family:var(--f-num);font-size:24px;font-weight:500;color:var(--ink);box-shadow:0 1px 0 var(--line)}
 .kp-keys button:active,.kp-bar button:active{background:var(--brand-soft)}
 .kp-keys .fn{font-size:18px;color:var(--ink-2)}
@@ -721,6 +721,8 @@ const BASE_FOODS={
   couscous:fd('קוסקוס','carb'), pasta:fd('פסטה עם מעט רוטב עגבניות','carb'), egg_noodles:fd('נודלס ביצים','carb'), rice_noodles:fd('נודלס אורז','carb'),
   pita:fd('פיתה לבנה','carb'), light_pita:fd('פיתה קלה','carb',null,null,null,null,{un:'פיתות',ug:null}),
   bread_light:fd('לחם קל','carb',null,null,null,null,{un:'פרוסות',ug:null}),
+  bl_dganim:fd('לחם דגנים לייט דוידוביץ','carb',222,12.5,28.4,3.3,{of:'bread_light'}), bl_classic:fd('לחם קלאסי קל דוידוביץ','carb',224,12.56,35.1,1.4,{of:'bread_light'}),
+  pita_bis:fd('פיתה ביס כוסמין אגמי','carb',97,5.3,15,0.8,{b:'u',un:'פיתות'}),
   white_bread:fd('לחם לבן','carb',null,null,null,null,{un:'פרוסות',ug:33,x:1}), bagel:fd('בייגל אמריקאי בלי שומשום','carb',null,null,null,null,{x:1}),
   tortilla:fd('טורטיה מקמח לבן','carb',null,null,null,null,{un:'טורטיות',ug:40}),
   rice_paper:fd('דפי אורז','carb',null,null,null,null,{un:'דפים',ug:null}), rice_cakes:fd('פריכיות אורז','carb',null,null,null,null,{un:'פריכיות',ug:null}),
@@ -770,7 +772,7 @@ const DINNER_C=[
     it('bread_light','לחם קל מכל סוג קמח','10 פרוסות'),hid(it('bagel','בייגל אמריקאי בלי שומשום','160 ג׳')),
     it('pita','פיתה לבנה','160 ג׳'),it('light_pita','פיתות קלות','4 פיתות'),
     it('tortilla','טורטיה מקמח לבן','3 טורטיות','','קוטר כ-20 ס״מ, כ-40 ג׳'),
-    it('rice_paper','דפי אורז 22 ס״מ','13 דפים'),it('rice_cakes','פריכיות אורז','13 פריכיות')]}];
+    it('rice_paper','דפי אורז 22 ס״מ','13 דפים'),it('rice_cakes','פריכיות אורז','13 פריכיות'),it('pita_bis','פיתה ביס כוסמין אגמי','','','לא בתפריט')]}];
 const LOAD_P=[
   {g:'בשר',items:[...LEAN.map(([id,n,w])=>it(id,n,'320 ג׳',w)),it('beef_fillet','פילה בקר','225 ג׳',RAW),it('sinta','סינטה','225 ג׳',RAW)]},
   {g:'דגים וטונה',items:[it('tilapia','אמנון','370 ג׳',RAW),it('tuna_water','טונה במים','370 ג׳',DRAINED),hid(it('lean_fish','דג רזה','370 ג׳',RAW))]},
@@ -941,6 +943,7 @@ function optFrac(r,path,id){const q=r.q[path]||{},qr=(r.qr&&r.qr[path])||{};let 
   return n?{fr:fr/n,ap,any}:null}
 function remFor(r,path,id){let o=0;for(const j of selOf(r,path)){if(j===id)continue;const x=optFrac(r,path,j);if(x)o+=x.fr}return Math.max(0,1-o)}
 function compHint(r,path,c,multi){
+  if(!String(c.t||'').trim())return 'לא בתפריט. נספר רק בערכים התזונתיים';
   if(c.opt==='_bread')multi=false;
   const tg=compTarget(c), u=unitOf(c.f), a=+(((c.ck?(r.qr||{}):r.q)[path]||{})[c.f])||0;
   if(!tg)return 'יעד בתפריט: '+c.t+(/\d/.test(c.t)&&!/ג׳|מ״ל/.test(c.t)?(food(c.f)&&food(c.f).b==='ml'?'. נפח יחידה במוצר יאפשר לחשב במ״ל':'. משקל יחידה במוצר יאפשר לחשב בגרמים'):'');
