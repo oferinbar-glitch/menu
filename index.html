@@ -672,14 +672,14 @@ const BASE_FOODS={
   v_tomato_c:fd('עגבניות','vc',18,0.88,3.9,0.2,FRESH), v_cherry:fd('עגבניות שרי','vc',null,null,null,null,{st:'טרי',x:1}),
   v_pepper:fd('פלפל אדום','vc',null,null,null,null,{st:'טרי',x:1}), v_pepper_o:fd('פלפל כתום','vc',null,null,null,null,{st:'טרי',x:1}),
   v_pepper_y:fd('פלפל צהוב','vc',null,null,null,null,{st:'טרי',x:1}), v_hot_red:fd('פלפל חריף אדום','vc',null,null,null,null,{st:'טרי',x:1}),
-  v_cabbage:fd('כרוב לבן','vc',25,1.28,5.8,0.1,FRESH), v_cabbage_r:fd('כרוב סגול','vc',null,null,null,null,FRESH),
+  v_cabbage:fd('כרוב לבן','vc',25,1.28,5.8,0.1,FRESH), v_cabbage_r:fd('כרוב סגול','vc',31,1.43,7.37,0.16,FRESH),
   v_cauliflower:fd('כרובית','vc',23,1.84,4.11,0.45,CKD),
   v_kohlrabi_raw:fd('קולורבי טרי','vc',27,1.7,6.2,0.1,FRESH), v_kohlrabi_ckd:fd('קולורבי מבושל','vc',29,1.8,6.69,0.11,CKD),
   v_onion_raw:fd('בצל לבן טרי','vc',40,1.1,9.34,0.1,FRESH), v_onion_ckd:fd('בצל לבן מבושל','vc',44,1.36,10.15,0.19,CKD),
-  v_onion_red:fd('בצל סגול','vc',null,null,null,null,FRESH),
+  v_onion_red:fd('בצל סגול','vc',44,0.94,9.93,0.1,FRESH),
   v_carrot:fd('גזר','vc',41,0.93,9.58,0.24,FRESH), v_beet:fd('סלק','vc',44,1.68,9.96,0.18,CKD),
-  v_radish:fd('צנונית','vc',16,0.68,3.4,0.1,FRESH), v_garlic:fd('שום','vc'),
-  v_fennel:fd('שומר','vc',34,1.35,8,0.2,CKD), v_leek:fd('כרישה','vc',null,null,null,null,FRESH),
+  v_radish:fd('צנונית','vc',16,0.68,3.4,0.1,FRESH), v_garlic:fd('שום','vc',149,6.36,33.06,0.5),
+  v_fennel:fd('שומר','vc',34,1.35,8,0.2,CKD), v_leek:fd('כרישה','vc',61,1.5,14.15,0.3,FRESH),
   v_celeriac:fd('שורש סלרי','vc',null,null,null,null,{st:'טרי',x:1}), v_parsley_root:fd('שורש פטרוזיליה','vc',null,null,null,null,{x:1}),
   v_eggplant:fd('חציל','vc',35,0.83,8.73,0.23,CKD), v_pumpkin:fd('דלעת','vc',null,null,null,null,{st:'טרי',x:1}), v_butternut:fd('דלורית','vc',null,null,null,null,{st:'טרי',x:1}),
   v_yellow_beans:fd('שעועית צהובה','vc',35,1.89,7.88,0.28,CKD), v_mushrooms:fd('פטריות','vc',28,2.17,5.29,0.47,CKD),
@@ -689,33 +689,42 @@ const BASE_FOODS={
   v_kishu:fd('קישוא','vg',20,0.91,4.3,0.31,CKD), v_zucchini:fd('זוקיני','vg',20,0.91,4.3,0.31,CKD),
   v_cucumber:fd('מלפפון','vg',null,null,null,null,{st:'טרי',x:1}), v_celery:fd('סלרי','vg',null,null,null,null,{st:'טרי',x:1}),
   v_okra:fd('במיה','vg',null,null,null,null,{st:'טרי',x:1}), v_scallion:fd('בצל ירוק','vg',null,null,null,null,{st:'טרי',x:1}),
-  v_asparagus:fd('אספרגוס','vg',null,null,null,null,FRESH),
-  v_parsley:fd('פטרוזיליה','vg',null,null,null,null,LF), v_coriander:fd('כוסברה','vg',null,null,null,null,LF),
-  v_mint:fd('נענע','vg',null,null,null,null,LF), v_basil:fd('בזיליקום','vg',null,null,null,null,LF), v_dill:fd('שמיר','vg',null,null,null,null,LF),
-  v_arugula:fd('רוקט','vg',25,2.58,3.65,0.66,LF), v_chard:fd('מנגולד','vg',null,null,null,null,LF), v_baby:fd('עלי בייבי','vg',28,2.5,3.7,0.4,LF),
-  v_watercress:fd('גרגיר הנחלים','vg',null,null,null,null,LF), v_chicory:fd('עולש ירוק','vg',null,null,null,null,LF),
+  v_asparagus:fd('אספרגוס','vg',22,2.4,4.11,0.22,FRESH),
+  v_parsley:fd('פטרוזיליה','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_coriander:fd('כוסברה','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
+  v_mint:fd('נענע','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_basil:fd('בזיליקום','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_dill:fd('שמיר','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
+  v_arugula:fd('רוקט','vg',25,2.58,3.65,0.66,LF), v_chard:fd('מנגולד','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_baby:fd('עלי בייבי','vg',28,2.5,3.7,0.4,LF),
+  v_watercress:fd('גרגיר הנחלים','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_chicory:fd('עולש ירוק','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
   v_broc_sprouts:fd('נבטי ברוקולי','vg',38,2.6,6,0.5,LF), v_alfalfa:fd('נבטי אלפלפא','vg',23,3.99,2.1,0.69,LF),
   v_mung:fd('נבטי מש','vg',30,3.04,5.94,0.18,LF), v_chives:fd('עירית','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
   v_oregano:fd('אורגנו','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_thyme:fd('טימין','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
   v_rosemary:fd('רוזמרין','vg',null,null,null,null,{st:'טרי',lf:1,x:1}), v_sage:fd('מרווה','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
-  v_lettuce:fd('חסה','vg',15,1.1,2.5,0.1,LF), v_spinach:fd('תרד','vg',null,null,null,null,LF),
-  chk_breast:fd('חזה עוף','pro'), chk_fillet:fd('פילה עוף','pro'), turkey:fd('חזה הודו','pro'), pastrami:fd('פסטרמה עד 3%','pro'),
+  v_lettuce:fd('חסה','vg',15,1.1,2.5,0.1,LF), v_spinach:fd('תרד','vg',null,null,null,null,{st:'טרי',lf:1,x:1}),
+  chk_breast:fd('חזה עוף','pro',165,31.02,0,3.57), chk_fillet:fd('פילה עוף','pro',150,22.3,2.37,5.81), turkey:fd('חזה הודו','pro',135,30.06,0,0.74), pastrami:fd('פסטרמה עד 3%','pro'),
+  pastrami2:fd('פסטרמה 2%','pro',98,16,4,2),
   beef_shoulder:fd('כתף בקר','pro'), shaitel:fd('שייטל','pro'), beef_fillet:fd('פילה בקר','pro'), sinta:fd('סינטה','pro'),
   lean_fish:fd('דג רזה','pro',null,null,null,null,{x:1}), tilapia:fd('אמנון','pro'), salmon:fd('סלמון','pro'), tuna_water:fd('טונה במים','pro'), labane:fd('לאבנה עד 5%','pro'),
   white3:fd('גבינה לבנה 3%','pro'), cottage3:fd('קוטג׳ 3%','pro'), white5:fd('גבינה לבנה 5%','pro'), cottage5:fd('קוטג׳ 5%','pro'),
   tzfatit:fd('צפתית 5%','pro'), bulgarit:fd('בולגרית 5%','pro'), feta:fd('פטה עיזים 5%','pro'),
   gvanatz:fd('גבינה צהובה 9%','pro',null,null,null,null,{un:'פרוסות',ug:30}), yogurt:fd('יוגורט חלבון','pro',null,null,null,null,{un:'גביעים',ug:null}),
-  egg_white:fd('חלבון ביצה','pro',null,null,null,null,{un:'חלבונים',ug:null}), egg_yolk:fd('חלמון ביצה','pro',null,null,null,null,{un:'חלמונים',ug:null}),
+  egg_white:fd('חלבון ביצה (בגרמים)','pro',null,null,null,null,{un:'חלבונים',ug:null,x:1}), egg_yolk:fd('חלמון ביצה','pro',null,null,null,null,{un:'חלמונים',ug:null,x:1}),
+  egg_whole:fd('ביצה שלמה','pro',null,null,null,null,{b:'u',un:'ביצים'}), egg_m:fd('ביצה M','pro',82.94,7.285,0.418,5.516,{b:'u',un:'ביצים',of:'egg_whole'}),
+  egg_l:fd('ביצה L','pro',97.24,8.541,0.49,6.467,{b:'u',un:'ביצים',of:'egg_whole'}), egg_wu:fd('חלבון ביצה','pro',null,null,null,null,{b:'u',un:'חלבונים'}),
+  yogurt_go:fd('יוגורט Go אוורירי','pro',64,10,3.7,1,{of:'yogurt',un:'גביעים'}),
+  bulg_gad:fd('בולגרית גד מסורתית 5%','pro',93,10,2,5,{of:'bulgarit'}), bulg_gad_sl:fd('בולגרית גד פרוסות מעודנת','pro',93,10,2,5,{of:'bulgarit'}),
+  white_ski5:fd('סקי 5%','pro',96,7.9,3.9,5,{of:'white5'}), gvz_emek:fd('גבינה צהובה 9% עמק','pro',202,30,0.2,9,{of:'gvanatz'}),
   edamame:fd('אדממה מקולפת','pro'), tempeh:fd('טמפה','pro'),
   ytv_drink:fd('משקה חלבון יטבתה','pro',null,null,null,null,{b:'ml',un:'בקבוקים',ug:null}),
-  potato:fd('תפוחי אדמה','carb'), gnocchi:fd('ניוקי תפוחי אדמה','carb'), rice:fd('אורז לבן','carb'), ptitim:fd('פתיתים','carb'),
+  potato:fd('תפוחי אדמה','carb',87,1.87,20.13,0.1),
+  gnocchi_gf:fd('ניוקי G FREE','carb',147,2.6,32.6,0.3,{of:'gnocchi'}), rice_parsi:fd('אורז פרסי סוגת','carb',157,2.2,22.4,6.6,{of:'rice'}),
+  couscous_osem:fd('קוסקוס דק אוסם','carb',184,4.3,33.8,3.2,{of:'couscous'}),
+  rn_wide:fd('אטריות אורז רחבות מאסטר שף','carb',159,2.1,36.6,0.4,{of:'rice_noodles'}), rn_thin:fd('אטריות אורז דקות מאסטר שף','carb',126,2.4,28.1,0,{of:'rice_noodles'}), gnocchi:fd('ניוקי תפוחי אדמה','carb'), rice:fd('אורז לבן','carb'), ptitim:fd('פתיתים','carb'),
   couscous:fd('קוסקוס','carb'), pasta:fd('פסטה עם מעט רוטב עגבניות','carb'), egg_noodles:fd('נודלס ביצים','carb'), rice_noodles:fd('נודלס אורז','carb'),
   pita:fd('פיתה לבנה','carb'), light_pita:fd('פיתה קלה','carb',null,null,null,null,{un:'פיתות',ug:null}),
   bread_light:fd('לחם קל','carb',null,null,null,null,{un:'פרוסות',ug:null}),
   white_bread:fd('לחם לבן','carb',null,null,null,null,{un:'פרוסות',ug:33,x:1}), bagel:fd('בייגל אמריקאי בלי שומשום','carb',null,null,null,null,{x:1}),
   tortilla:fd('טורטיה מקמח לבן','carb',null,null,null,null,{un:'טורטיות',ug:40}),
   rice_paper:fd('דפי אורז','carb',null,null,null,null,{un:'דפים',ug:null}), rice_cakes:fd('פריכיות אורז','carb',null,null,null,null,{un:'פריכיות',ug:null}),
-  milk:fd('חלב רגיל','oth',null,null,null,null,{b:'ml'}), milk_oat:fd('חלב שיבולת שועל','oth',null,null,null,null,{b:'ml',of:'milk'}),
+  milk:fd('חלב רגיל','oth',null,null,null,null,{b:'ml'}), milk_oat:fd('חלב שיבולת שועל תנובה','oth',54,1.1,5,3,{b:'ml',of:'milk'}),
   milk_soy_y:fd('חלב סויה צהוב','oth',null,null,null,null,{b:'ml',of:'milk'}), milk_soy_g:fd('חלב סויה ירוק','oth',null,null,null,null,{b:'ml',of:'milk'}),
   milk_soy_b:fd('חלב סויה כחול','oth',null,null,null,null,{b:'ml',of:'milk'}), hearts_palm:fd('לבבות דקל','oth'), skinny_pasta:fd('סקיני פסטה','oth'),
   pizza:fd('פיצה','oth',null,null,null,null,{b:'u',un:'משולשים'}), sushi:fd('סושי','oth',null,null,null,null,{b:'u',un:'רולים'}),
@@ -728,7 +737,7 @@ const VEG={color:{label:'צבעוניים',g:225,items:VEGIDS.color.map(i=>BASE_
 const UNLIM=['v_mushrooms'];
 const MILK_MAX=100;
 const FISH=['בקלה','הליבוט','אמנון','סול','נסיכת הנילוס','לברק','דניס','ברבוניה','ברמונדי','מרלוז'];
-const LEAN=[['chk_breast','חזה עוף',RAW],['chk_fillet','פילה עוף',RAW],['turkey','חזה הודו',RAW],['pastrami','פסטרמה עד 3%',''],['beef_shoulder','כתף בקר',RAW],['shaitel','שייטל',RAW]];
+const LEAN=[['chk_breast','חזה עוף',RAW],['chk_fillet','פילה עוף',RAW],['turkey','חזה הודו',RAW],['pastrami','פסטרמה עד 3%',''],['pastrami2','פסטרמה 2%',''],['beef_shoulder','כתף בקר',RAW],['shaitel','שייטל',RAW]];
 const it=(id,n,a,w,x,comp)=>({id,n,a,w:w||'',x:x||'',comp:comp||null});
 const hid=o=>Object.assign(o,{hide:1});
 function proteinGroups(m){
@@ -745,7 +754,7 @@ function proteinGroups(m){
       it('gvanatz','גבינה צהובה 9%',m.gvz,'','פרוסה = 30 ג׳'),
       it('yogurt','יוגורט חלבון',m.yog,'','עד 150 קל׳ לגביע'),
       ...(m.ytv?[it('ytv_drink','משקה חלבון יטבתה',m.ytv)]:[])]},
-    {g:m.tmp?'ביצים, אדממה וטמפה':'ביצים ואדממה',t:'אחר',items:[it('eggs','ביצים',m.eggs,'','',[{f:'egg_white',t:m.ew+' חלבונים'},{f:'egg_yolk',t:m.ey+' חלמונים'}]),it('edamame','אדממה מקולפת',m.eda+' ג׳',COOKED),...(m.tmp?[it('tempeh','טמפה',m.tmp+' ג׳')]:[])]}
+    {g:m.tmp?'ביצים, אדממה וטמפה':'ביצים ואדממה',t:'אחר',items:[it('eggs','ביצים',m.eggs,'',`כלומר ${m.ey} ביצים שלמות ועוד ${m.ew-m.ey} חלבונים`,[{f:'egg_whole',t:m.ey+' ביצים'},{f:'egg_wu',t:(m.ew-m.ey)+' חלבונים'}]),it('edamame','אדממה מקולפת',m.eda+' ג׳',COOKED),...(m.tmp?[it('tempeh','טמפה',m.tmp+' ג׳')]:[])]}
   ];
 }
 const LUNCH_P=proteinGroups({meat:320,fish:370,tuna:370,labane:470,c3:560,c5:445,cheese:345,gvz:'7 פרוסות',yog:'3 גביעים',eggs:'7 חלבונים + 3 חלמונים',ew:7,ey:3,eda:265,tmp:235,ytv:'3 בקבוקים',salmon:225});
@@ -782,7 +791,7 @@ const BRC={f:'bread_light',t:'2 פרוסות'};
 const SNACK_FISH=['אמנון','בקלה','מרלוז','לברק'];
 const SNACK_P=[
   {g:'לחם קל + גבינה צהובה',items:[it('gvanatz','גבינה צהובה 9%','30 ג׳','','פרוסה אחת')]},
-  {g:'לחם קל + בשר רזה',items:[it('chk_breast','חזה עוף','50 ג׳',RAW),it('turkey','חזה הודו','50 ג׳',RAW),it('shaitel','שייטל','50 ג׳',RAW),it('pastrami','פסטרמה עד 3%','50 ג׳')]},
+  {g:'לחם קל + בשר רזה',items:[it('chk_breast','חזה עוף','50 ג׳',RAW),it('turkey','חזה הודו','50 ג׳',RAW),it('shaitel','שייטל','50 ג׳',RAW),it('pastrami','פסטרמה עד 3%','50 ג׳'),it('pastrami2','פסטרמה 2%','50 ג׳')]},
   {g:'לחם קל + אמנון או טונה',items:[it('tilapia','אמנון','50 ג׳',RAW),it('tuna_water','טונה במים','50 ג׳',DRAINED),hid(it('lean_fish','דג רזה','50 ג׳',RAW))]},
   {g:'לחם קל + גבינה לבנה או קוטג׳',items:[it('white3','גבינה לבנה 3%','100 ג׳'),it('cottage3','קוטג׳ 3%','100 ג׳')]},
   {g:'בלי לחם',items:[it('yogurt','יוגורט חלבון','1 גביע','','עד 150 קל׳ לגביע')]}];
@@ -1324,10 +1333,10 @@ function renderSheet(){
     const pickMode=s.pick||!sel.length, ttl=sng?'ירק ירוק לביניים':'ירקות '+mealName[meal];
     if(pickMode){
       const add=sel.length>0, st=vegStat(q), left=Math.max(0,1-st.fr);
-      let body=add&&!sng?`<div class="addban">${left<=0?'המנה כבר מלאה. אפשר להוסיף, אבל זה מעל התפריט.':`מילאת ${st.pct}% מהמנה. ליד כל ירק כתוב כמה נשאר ממנו.`}</div>`:'';
+      let body=add?`<div id="live" class="vstick">${liveHtml()}</div>`:'';
       body+=lists.map(k=>`<section class="vgrp vg-${k}"><div class="vgh"><i></i><b>ירקות ${VEG[k].label}</b><span>${sng?'':add?'':`מנה מלאה ${VEG[k].g} ג׳`}</span></div><div class="olist">`+
         VEGIDS[k].map(id=>{const f=food(id),on=sel.includes(id),kc=hasVals(f)?n1(f.k)+' קל׳ ל-100 ג׳':'חסרים ערכים',un=UNLIM.includes(id);
-          const o=on?{n:f.n,x:'כבר נבחר',a:''}:add&&!sng&&!un?{n:f.n,x:'נשאר, '+kc,a:n0(left*VEG[k].g)+' ג׳'}:{n:f.n,x:kc+(un?', ללא הגבלה':''),a:''};
+          const o={n:f.n,x:kc+(un?', ללא הגבלה':''),a:''};
           return optRow(o,on,'vpick',id)}).join('')+'</div></section>').join('');
       html=shell(add?ttl+': ירק נוסף':ttl,add?'בוחרים ירק להוספה':sng?'בוחרים את הירק הירוק':'בוחרים ירק, ואפשר להוסיף עוד ירקות בשלב הבא',body,
         add?'<button class="btn pri block" data-act="vback">חזרה למשקלים</button>':'');
@@ -1724,6 +1733,8 @@ function act(a,v,el){
         else{if(!(arr.length===1&&arr[0]===v)){delete r.q[p];delete r.qr[p];r.snapm[p]={};if(r.pf)delete r.pf[p]}arr=[v]}
         setSel(r,p,arr);r.snapm[p][v]={n:o.n,a:o.a,w:o.w};r.snap[p]=r.snapm[p][arr[0]]||r.snap[p];
         if((p.endsWith('protein')||p==='snack.opt')&&!arr.includes('lean_fish'))r[meal].fish=null});
+      {const r=getDay(cur),c=optComps(r,p,v).find(c=>c.g&&c.f===c.g&&!(S.pref&&S.pref[c.g])&&allFoodIds().some(i=>food(i).of===c.g));
+       if(c){openSheet({type:'variant',path:p,g:c.g});break}}
       openSheet({type:'amt',path:p}); break}
     case'addopt':catTab={};openSheet({type:'pick',path:v,add:1});break;
     case'unopt':{const p=sheetSpec.path,meal=p.split('.')[0],u=undoable();
