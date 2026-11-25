@@ -504,7 +504,7 @@ main{padding-top:8px;padding-bottom:calc(112px + env(safe-area-inset-bottom))}
 .hero .hnote{display:block;font-size:13px;color:var(--ink-2);margin-top:10px}
 circle.m-0{stroke:var(--surface-2)}
 .mtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 22px}
-.mtile{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px 12px 12px;text-align:right}
+.mtile{cursor:pointer;-webkit-tap-highlight-color:transparent;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px 12px 12px;text-align:right}
 .mtile>span{display:block}
 .mtile .mn{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-2);font-weight:500}
 .mtile .mn i{width:9px;height:9px;border-radius:50%}
@@ -512,6 +512,10 @@ circle.m-0{stroke:var(--surface-2)}
 .mtile .num small{font-family:var(--f-ui);font-size:12px;font-weight:500;color:var(--ink-2);letter-spacing:0}
 .mtile .mb{display:block;height:6px;border-radius:6px;background:var(--surface-2);overflow:hidden;margin-top:8px}
 .mtile .mb i{display:block;height:100%;border-radius:6px}
+.mtile:active{background:var(--surface-2)}
+.mxl{margin-top:6px}.mxs{display:flex;align-items:baseline;justify-content:space-between;margin:18px 0 4px;font-weight:700;font-size:15px}.mxs .num{font-size:15px}
+.mxr{display:flex;align-items:baseline;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}.mxr:last-child{border-bottom:0}.mxr .v{flex:1;min-width:0}.mxr b{display:block;font-weight:500;font-size:15px}.mxr small{font-size:12.5px;color:var(--ink-2)}.mxr .num{font-size:17px}
+.mxt{display:flex;align-items:baseline;justify-content:space-between;padding:12px 14px;border-radius:14px;background:var(--surface-2);margin-top:8px}.mxt .num{font-size:26px}
 .mtile em{display:block;font-style:normal;font-size:12.5px;color:var(--ink-2);margin-top:6px}
 /* meals */
 .sec-t{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.3px;margin:0 2px 12px}
@@ -620,6 +624,8 @@ nav.tabs .fab:active{transform:translateX(-50%) scale(.96)}
 .vgh b{font-size:17px;font-weight:700;color:var(--gc);letter-spacing:-.2px}
 .vgh span{font-size:13px;color:var(--ink-2);flex:1}
 .vsub{font-size:13px;font-weight:700;color:var(--gc);padding:14px 2px 4px;border-bottom:1px solid color-mix(in srgb,var(--gc) 18%,transparent)}
+.vmac .mrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--ink-2)}.vmac .mrow b{color:var(--ink);font-weight:600}.vmiss{font-size:12.5px;color:var(--warn);margin-top:6px}
+.vtot:not(:empty){margin-top:16px;padding:14px;border-radius:16px;background:var(--surface-2)}.vth{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;margin-bottom:6px}.vtot .mrow{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--ink-2)}.vtot .mrow b{color:var(--ink)}
 .vitem{padding:10px 0 12px;border-bottom:1px solid color-mix(in srgb,var(--gc) 18%,transparent)}.vitem:last-child{border-bottom:0}
 .vih{display:flex;align-items:center;gap:10px}.vih .v{flex:1}.vih b{display:block;font-size:16px;font-weight:600}.vih small{display:block;font-size:12.5px;color:var(--ink-2)}
 .vgrp .olist .opt{background:transparent}
@@ -959,6 +965,15 @@ function compHint(r,path,c,multi){
 function sumComps(r,path){const t=NZ(),q=r.q[path]||{};
   for(const c of compsFor(r,path)){if(!c.f||!(q[c.f]>0)){t.noamt++;continue}nadd(t,nut(c.f,q[c.f]))}return t}
 function sumMap(q){const t=NZ();for(const[id,a]of Object.entries(q||{}))nadd(t,nut(id,a));return t}
+function dayItems(r){const out=[],add=(sec,id,a)=>{a=+a;if(!(a>0)||!food(id))return;out.push({sec,id,n:food(id).n,a,u:unitOf(id),t:nut(id,a)})};
+  const mp=(sec,p)=>{for(const[id,a]of Object.entries(r.q[p]||{}))add(sec,id,a)}, cp=(sec,p)=>{const q=r.q[p]||{};for(const c of compsFor(r,p))add(sec,c.f,q[c.f])};
+  mp('צהריים','lunch.veg');cp('צהריים','lunch.protein');
+  cp('ביניים','snack.opt');cp('ביניים','snack.bread');mp('ביניים','snack.green');
+  if(r.loadingToday){if(r.loading.mode==='out')cp('העמסה','loading.out');else{cp('העמסה','loading.protein');cp('העמסה','loading.carb')}}
+  else{mp('ערב','dinner.veg');cp('ערב','dinner.protein');cp('ערב','dinner.carb')}
+  r.extra.forEach(x=>add('תוספות וחלב',x.f,x.a));r.milks.forEach(x=>add('תוספות וחלב',x.f,x.a));
+  r.free.forEach(x=>{const k=+x.k||0;if(!k)return;const has=x.p!=null||x.c!=null||x.f!=null;out.push({sec:'קלוריות חופשיות',n:x.d||'קלוריות חופשיות',a:0,u:'',t:has?{k,p:+x.p||0,c:+x.c||0,f:+x.f||0}:{k,p:0,c:0,f:0,nomac:1}})});
+  return out}
 function dayNut(r){
   const secs=[];
   secs.push({n:'צהריים',t:nadd(sumMap(r.q['lunch.veg']),sumComps(r,'lunch.protein'))});
@@ -980,6 +995,9 @@ function vselOf(r,p){const a=((r.vsel||{})[p]||[]).filter(id=>food(id)),q=r.q[p]
 function vegHint(r,p,id){const q=vegQ(r,p),a=+q[id]||0,f=food(id);if(p==='snack.green')return 'ירק ירוק אחד לבחירה';if(UNLIM.includes(id))return 'ללא הגבלה';
   const G=f.grp==='vc'?VEG.color.g:VEG.green.g,st=vegStat(q),oth=st.fr-a/G,al=Math.max(0,1-oth)*G;
   if(al<=0)return 'המנה כבר מלאה מהירקות האחרים';return `אפשר עד ${n0(al)} ג׳${a>0?`, נשארו עוד ${n0(Math.max(0,al-a))}`:''}`}
+function vegMac(id,a){const n=nut(id,a);if(!n)return'';if(n.miss)return'<span class="vmiss">חסרים ערכים, לא נספר</span>';return macroLine(n)}
+function vegTot(q){const t=sumMap(q),g=Object.values(q||{}).reduce((s,x)=>s+(+x||0),0);if(!(g>0))return'';
+  return`<div class="vth"><b>סך הירקות</b><span>${n1(g)} ג׳</span></div>${t.k>0?macroLine(t):''}${t.miss.length?`<div class="vmiss">בלי ערכים: ${esc(t.miss.map(i=>food(i).n).join(', '))}</div>`:''}`}
 function vegRemTxt(q,k){const st=vegStat(q),left=Math.max(0,1-st.fr),g=VEG[k].g;return st.col+st.grn>0?(left>0.005?`נשארו ${n0(left*g)} מתוך ${g} ג׳`:'המנה מלאה'):`מנה מלאה ${g} ג׳`}
 function vegRowInfo(r,meal){const st=vegStat(vegQ(r,meal+'.veg'));
   if(st.tot>0)return{n:st.pct+'% מהמנה',s:esc(st.names.slice(0,4).join(', ')+(st.names.length>4?' ועוד':'')),q:n1(st.tot),u:'ג׳'};
@@ -1153,7 +1171,7 @@ function hero(N){
   const warn=T.noamt||T.miss.length;
   return`<button class="hero" data-act="nut" aria-label="פירוט התזונה היומית">${ringH}
     <span class="hnote">${T.k>0?(warn?'יש פריטים שלא נספרו. לחיצה לפירוט':'לחיצה לפירוט לפי ארוחה'):'הסיכום מתמלא כשמזינים משקלים'}</span></button>
-  <div class="mtiles">${M.map(m=>`<div class="mtile"><span class="mn"><i class="m-${m[3]}"></i>${m[0]}</span><span class="num">${n1(m[1])}<small> ג׳</small></span><span class="mb"><i class="m-${m[3]}" style="width:${pc(m[2])}%"></i></span><em>${pc(m[2])}% מהקלוריות</em></div>`).join('')}</div>`;
+  <div class="mtiles">${M.map(m=>`<div class="mtile" role="button" tabindex="0" data-act="mac" data-val="${m[3]}"><span class="mn"><i class="m-${m[3]}"></i>${m[0]}</span><span class="num">${n1(m[1])}<small> ג׳</small></span><span class="mb"><i class="m-${m[3]}" style="width:${pc(m[2])}%"></i></span><em>${pc(m[2])}% מהקלוריות</em></div>`).join('')}</div>`;
 }
 function mealCard(cls,icon,title,subt,t,done,inner){
   return`<section class="meal ${cls}"><div class="mh2"><span class="tile">${icon}${done?`<i class="ok">${I.check}</i>`:''}</span><div class="mt2"><h2>${title}</h2>${subt?`<small>${subt}</small>`:''}</div>${t&&t.k>0?`<span class="mk"><span class="num">${n0(t.k)}</span><i>קל׳</i></span>`:''}</div>${inner}</section>`;
@@ -1210,7 +1228,7 @@ function viewDay(){
   h+=`<div class="jcard"><div class="jhead"><span class="tile t-m">${I.drop}</span><h3>חלב לקפה</h3><span class="pill ${r.milk>MILK_MAX?'bad':r.milk?'ok':''}">${n0(r.milk)} מתוך ${MILK_MAX} מ״ל</span></div>
     <p class="mlk-sub">${r.milks.length?`נספר בקלוריות: <b style="color:var(--ink)">${mk.k>0?n0(mk.k)+' קל׳':'חסרים ערכים לחלב'}</b>${r.milk>MILK_MAX?'. <span class="mlk-over">מעל '+MILK_MAX+' מ״ל</span>':''}`:'כל קפה עם חלב נרשם במ״ל ונספר בקלוריות'}</p>
     ${r.milks.length?`<ul class="entries">${r.milks.map((x,i)=>{const n=nut(x.f,x.a),f=food(x.f);return`<li><span>${esc(f?f.n:x.f)} <small style="color:var(--ink-2)">${n0(x.a)} מ״ל</small></span><span style="font-size:13px;color:var(--ink-2)">${n&&!n.miss?n0(n.k)+' קל׳':'חסרים ערכים'}</span><button class="del" data-act="delmilk" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`}).join('')}</ul>`:''}
-    <div class="mlk-acts"><button class="btn sm pri" data-act="milkadd">${I.plus}קפה עם חלב</button>${last?`<button class="btn sm line" data-act="milkrep">שוב: ${n0(last.a)} מ״ל ${esc((food(last.f)||{}).n||'')}</button>`:''}</div></div>`}
+    <div class="mlk-acts"><button class="btn sm pri" data-act="milkadd">${I.plus}קפה עם חלב</button></div></div>`}
 
   const fb=freeBal(cur);
   const frRow=(x,i)=>`<li><span>${esc(x.d||'ללא תיאור')}${(x.p!=null||x.c!=null||x.f!=null)?` <small style="color:var(--ink-2)">חלבון ${n1(+x.p||0)}, פחמימה ${n1(+x.c||0)}, שומן ${n1(+x.f||0)}</small>`:''}</span><span class="num">${+x.k}</span><button class="del" data-act="delfree" data-val="${i}" aria-label="מחיקה">${I.x}</button></li>`;
@@ -1277,7 +1295,7 @@ function liveHtml(){
   return'';
 }
 function updLive(){const el=document.getElementById('live');if(el)el.innerHTML=liveHtml();
-  const s=sheetSpec;if(s&&s.type==='veg'){const r=getDay(cur);sheetEl.querySelectorAll('[data-vhint]').forEach(h=>h.textContent=vegHint(r,s.path,h.dataset.vhint));return}
+  const s=sheetSpec;if(s&&s.type==='veg'){const r=getDay(cur),q=vegQ(r,s.path);sheetEl.querySelectorAll('[data-vhint]').forEach(h=>h.textContent=vegHint(r,s.path,h.dataset.vhint));sheetEl.querySelectorAll('[data-vmac]').forEach(h=>h.innerHTML=vegMac(h.dataset.vmac,q[h.dataset.vmac]));const vt=document.getElementById('vtot');if(vt)vt.innerHTML=vegTot(q);return}
   if(!s||s.type!=='amt')return;const r=getDay(cur),multi=selOf(r,s.path).length>1;
   compsFor(r,s.path).forEach((c,i)=>{const h=sheetEl.querySelector(`[data-hint="${i}"]`);if(h)h.textContent=compHint(r,s.path,c,multi)});
   selOf(r,s.path).forEach(id=>{const e=sheetEl.querySelector(`[data-optpct="${id}"]`),o=optFrac(r,s.path,id);if(e&&o)e.textContent=Math.round(o.fr*100)+'%'})}
@@ -1353,11 +1371,22 @@ function renderSheet(){
       body+=lists.map(k=>{const ids=sel.filter(id=>(food(id)||{}).grp===(k==='color'?'vc':'vg'));if(!ids.length)return'';
         return`<section class="vgrp vg-${k}"><div class="vgh"><i></i><b>ירקות ${VEG[k].label}</b></div>`+ids.map(id=>{const f=food(id);
           return`<div class="vitem"><div class="vih"><span class="v"><b>${esc(f.n)}</b><small>${hasVals(f)?n1(f.k)+' קל׳ ל-100 ג׳':'חסרים ערכים'}</small></span><button class="btn sm danger" data-act="vrem" data-val="${id}">הסרה</button></div>
-            <div class="field" style="margin-top:6px"><label for="v_${id}">משקל בגרמים</label><div class="qwrap"><input id="v_${id}" class="big" type="text" data-num inputmode="none" placeholder="0" data-q="${p}" data-f="${id}" value="${q[id]??''}"><span class="qu">ג׳</span></div><small class="hint hlive" data-vhint="${id}">${esc(vegHint(r,p,id))}</small></div></div>`}).join('')+'</section>'}).join('');
+            <div class="field" style="margin-top:6px"><label for="v_${id}">משקל בגרמים</label><div class="qwrap"><input id="v_${id}" class="big" type="text" data-num inputmode="none" placeholder="0" data-q="${p}" data-f="${id}" value="${q[id]??''}"><span class="qu">ג׳</span></div><small class="hint hlive" data-vhint="${id}">${esc(vegHint(r,p,id))}</small><div class="vmac" data-vmac="${id}">${vegMac(id,q[id])}</div></div></div>`}).join('')+'</section>'}).join('');
+      body+=`<div class="vtot" id="vtot">${vegTot(q)}</div>`;
       body+=`<div class="dangerzone"><button class="btn danger sm" data-act="vclear">ניקוי הירקות</button></div>`;
       html=shell(ttl,sng?'משקל בגרמים':'כל ירק נשקל בגרמים, במשקל חי',body,
         `<div class="foot2"><button class="btn line" data-act="vadd">${I.plus}${sng?'ירק אחר':'הוספת ירק'}</button><button class="btn pri" data-act="close">סיום</button></div>`);
     }
+  }else if(s.type==='mac'){
+    const key=s.m, MN={p:'חלבון',c:'פחמימה',f:'שומן'}[key], it=dayItems(r), secs=[];
+    let tot=0;const miss=[],nomac=[];
+    for(const x of it){if(!x.t){continue}if(x.t.miss){miss.push(x.n);continue}if(x.t.nomac){nomac.push(x);continue}const v=x.t[key];if(!(v>0))continue;tot+=v;let g=secs.find(z=>z.n===x.sec);if(!g)secs.push(g={n:x.sec,v:0,rows:[]});g.v+=v;g.rows.push(x)}
+    let body=`<div class="mxt"><span>סך ${MN} היום</span><span><span class="num">${n1(tot)}</span> ג׳</span></div>`;
+    body+=secs.length?secs.map(g=>`<div class="mxs"><span>${esc(g.n)}</span><span><span class="num">${n1(g.v)}</span> ג׳</span></div><div class="mxl">${g.rows.sort((a,b)=>b.t[key]-a.t[key]).map(x=>`<div class="mxr"><span class="v"><b>${esc(x.n)}</b><small>${x.a?`${n1(x.a)} ${esc(x.u)}`:''}${x.a&&food(x.id)?`, ${n1(food(x.id)[key]||0)} ג׳ ${food(x.id).b==='u'?'ליחידה':food(x.id).b==='ml'?'ל-100 מ״ל':'ל-100 ג׳'}`:''}</small></span><span><span class="num">${n1(x.t[key])}</span> ג׳</span></div>`).join('')}</div>`).join('')
+      :`<p class="muted" style="margin-top:14px">עוד אין ${MN} בנתונים של היום.</p>`;
+    if(miss.length)body+=`<p class="hint" style="color:var(--warn);margin-top:14px">לא נספרו, כי חסרים ערכים: ${esc([...new Set(miss)].join(', '))}</p>`;
+    if(nomac.length)body+=`<p class="hint" style="margin-top:8px">קלוריות חופשיות בלי פירוט מאקרו לא נכנסות לכאן: ${nomac.map(x=>n0(x.t.k)).join(', ')} קל׳</p>`;
+    html=shell(MN+': איך הגעתי לסך','כל מה שנספר היום, לפי ארוחה',body,'<button class="btn pri block" data-act="close">סגירה</button>');
   }else if(s.type==='free'){
     const fb=freeBal(cur);
     html=shell('קלוריות חופשיות',fb?`נותרו ${fb.left} להיום`:'',`<form id="freeForm"><div class="field"><label for="fk">כמה קלוריות?</label><input id="fk" class="big" type="text" data-num inputmode="none" min="1" placeholder="0" enterkeyhint="done"></div>
@@ -1676,6 +1705,7 @@ function act(a,v,el){
     case'rtab':rulesTab=v;render();break;
     case'dtab':dataTab=v;render();break;
     case'nut':openSheet({type:'nut'});break;
+    case'mac':openSheet({type:'mac',m:v});break;
     case'bool':haptic();upd(r=>{setP(r,v,!getP(r,v));if(v==='training'&&!r.training)r.loadingToday=false});break;
     case'lmode':upd(r=>{if(r.loading.mode!==v){r.loading.mode=v;['loading.protein','loading.carb','loading.out'].forEach(p=>{setSel(r,p,[]);delete r.q[p];delete r.qr[p];delete r.snap[p];if(r.snapm)delete r.snapm[p]});r.loading.fish=null}});break;
     case'milkadd':openSheet({type:'milk'});break;
