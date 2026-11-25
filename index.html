@@ -1063,7 +1063,7 @@ function row(kind,k,path,info,act='pick'){
     <span class="v">${filled?(info.items?info.items.map(x=>`<span class="it"><b>${esc(x.n)}</b><small>${x.m}</small></span>`).join(''):`<b>${esc(info.n)}</b>${info.s?`<small>${info.s}</small>`:''}`):'<span class="ph">בחירה</span>'}</span>
     ${filled?(info.items?(info.need?'<span class="need">משקל?</span>':''):info.need?'<span class="need">משקל?</span>':info.txt?`<span class="amt txt">${esc(info.txt)}</span>`:info.q?`<span class="amt"><span class="num">${info.q}</span><i>${esc(info.u||'')}</i></span>`:amtHtml(info.a)):`<span class="add">${I.plus}</span>`}
   </button>`}
-const mShort=n=>!n?'':n.miss?'חסרים ערכים, לא נספר':`${n0(n.k)} קל׳, חלבון ${n1(n.p)}, פחמימה ${n1(n.c)}, שומן ${n1(n.f)}`;
+const mShort=n=>!n?'':n.miss?'חסרים ערכים, לא נספר':`${n0(n.k)} קל׳, ${n1(n.p)} חלבון, ${n1(n.c)} פחמימה, ${n1(n.f)} שומן`;
 function eatenItems(ids,q){const out=[];for(const id of ids){const a=+q[id]||0;if(a>0&&food(id))out.push({n:food(id).n,m:mShort(nut(id,a))})}return out}
 function pickInfo(r,path,extra){
   const l=label(r,path); if(!l)return null;
